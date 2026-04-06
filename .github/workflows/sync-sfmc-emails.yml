@@ -2,8 +2,7 @@ name: Sync SFMC Email Content
 
 on:
   schedule:
-    # Daily at midnight UTC — adjust as needed
-    - cron: "0 0 * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
