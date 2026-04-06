@@ -2,7 +2,7 @@ name: Sync SFMC Email Content
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
