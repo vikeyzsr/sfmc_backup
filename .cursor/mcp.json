@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "sfmc": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "cd /Users/rganesh/SfDemo/sfmc-mcp-server && /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m src"
+      ],
+      "env": {
+        "SFMC_CLIENT_ID": "79qaw847gpfxmo8y7ili427s",
+        "SFMC_CLIENT_SECRET": "fyFbcJa5hyH7HoNZqzTyuynX",
+        "SFMC_SUBDOMAIN": "mckwnwh28tqwf-bdydc38ycyxmz0"
+      }
+    }
+  }
+}
