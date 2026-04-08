@@ -1,0 +1,30 @@
+[
+  {
+    "file": "68364_Full_Width_Banner.html",
+    "id": 68364,
+    "name": "Full_Width_Banner",
+    "customerKey": "f8159b61-9f18-49b3-910b-57acb3272b0b",
+    "assetType": "Image Block",
+    "status": "Draft",
+    "category": "cumulus",
+    "subject": "",
+    "preheader": "",
+    "createdDate": "2023-09-22T04:39:13.963-06:00",
+    "modifiedDate": "2023-09-22T04:45:59.74-06:00",
+    "modifiedBy": "Rishi Ganesh"
+  },
+  {
+    "file": "69436_cumulus-logo.html",
+    "id": 69436,
+    "name": "cumulus-logo",
+    "customerKey": "d04101a2-bfd5-4cd5-a9fb-c51f09b4735e",
+    "assetType": "Image Block",
+    "status": "Draft",
+    "category": "Content Builder",
+    "subject": "",
+    "preheader": "",
+    "createdDate": "2023-10-04T05:28:13.523-06:00",
+    "modifiedDate": "2023-10-04T05:29:55.447-06:00",
+    "modifiedBy": "Rishi Ganesh"
+  }
+]
