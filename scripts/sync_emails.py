@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Fetch all SFMC Content Builder email assets and write them as individual HTML files.
+"""Fetch all SFMC Content Builder assets (emails + content blocks) and write
+them as individual files for version tracking.
 
 Credentials are read from environment variables:
     SFMC_CLIENT_ID
@@ -7,10 +8,12 @@ Credentials are read from environment variables:
     SFMC_SUBDOMAIN
 
 Output:
-    email-content/{id}_{name}.html   -- one file per email
-    email-content/manifest.json      -- metadata index of every email
-    email-content/CHANGELOG.md       -- running history of changes
-    email-content/.commit-summary    -- consumed by the workflow for the commit message
+    email-content/emails/{id}_{name}.html       -- one file per email
+    email-content/emails/manifest.json          -- metadata index of emails
+    email-content/content-blocks/{id}_{name}.*  -- one file per content block
+    email-content/content-blocks/manifest.json  -- metadata index of blocks
+    email-content/CHANGELOG.md                  -- running history of changes
+    email-content/.commit-summary               -- consumed by the workflow
 """
 
 from __future__ import annotations
@@ -28,13 +31,23 @@ import httpx
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "email-content"
+EMAILS_DIR = OUTPUT_DIR / "emails"
+CONTENT_BLOCKS_DIR = OUTPUT_DIR / "content-blocks"
 
 EMAIL_TYPE_IDS = [207, 208, 209]  # templatebasedemail, htmlemail, textonlyemail
+CONTENT_BLOCK_TYPE_IDS = [
+    195,  # webpage
+    196,  # textblock
+    197,  # htmlblock
+    199,  # buttonblock
+    220,  # codesnippetblock
+    227,  # dynamiccontentblock
+]
 PAGE_SIZE = 2500
 
 CHANGELOG_FILE = OUTPUT_DIR / "CHANGELOG.md"
 COMMIT_SUMMARY_FILE = OUTPUT_DIR / ".commit-summary"
-IGNORED_FILES = {"manifest.json", "CHANGELOG.md", ".commit-summary"}
+META_FILES = {"manifest.json"}
 
 
 # ---------------------------------------------------------------------------
@@ -63,8 +76,9 @@ def authenticate(client_id: str, client_secret: str, subdomain: str) -> tuple[st
 # Content Builder API
 # ---------------------------------------------------------------------------
 
-def fetch_all_emails(token: str, rest_url: str) -> list[dict[str, Any]]:
-    """Paginate through the Content Builder Asset query and return all email items."""
+def fetch_assets(token: str, rest_url: str, type_ids: list[int], label: str) -> list[dict[str, Any]]:
+    """Paginate through the Content Builder Asset query and return all items
+    matching the given asset type IDs."""
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     all_items: list[dict[str, Any]] = []
     page = 1
@@ -75,7 +89,7 @@ def fetch_all_emails(token: str, rest_url: str) -> list[dict[str, Any]]:
             "query": {
                 "property": "assetType.id",
                 "simpleOperator": "in",
-                "value": EMAIL_TYPE_IDS,
+                "value": type_ids,
             },
         }
         resp = httpx.post(
@@ -90,7 +104,7 @@ def fetch_all_emails(token: str, rest_url: str) -> list[dict[str, Any]]:
         all_items.extend(items)
 
         count = data.get("count", 0)
-        print(f"  Page {page}: {len(items)} items (total {len(all_items)}/{count})")
+        print(f"  [{label}] Page {page}: {len(items)} items (total {len(all_items)}/{count})")
 
         if not items or page * PAGE_SIZE >= count:
             break
@@ -110,7 +124,7 @@ def sanitize_filename(name: str) -> str:
     return name or "unnamed"
 
 
-def _email_metadata(item: dict[str, Any]) -> dict[str, str]:
+def _asset_metadata(item: dict[str, Any]) -> dict[str, str]:
     """Extract human-readable metadata from an SFMC asset item."""
     modified_by = item.get("modifiedBy", {})
     return {
@@ -120,9 +134,9 @@ def _email_metadata(item: dict[str, Any]) -> dict[str, str]:
     }
 
 
-def _load_previous_manifest() -> dict[str, dict[str, Any]]:
-    """Load the previous manifest.json and return a lookup keyed by filename."""
-    manifest_path = OUTPUT_DIR / "manifest.json"
+def _load_previous_manifest(directory: Path) -> dict[str, dict[str, Any]]:
+    """Load the previous manifest.json from a directory, keyed by filename."""
+    manifest_path = directory / "manifest.json"
     if not manifest_path.exists():
         return {}
     try:
@@ -132,22 +146,51 @@ def _load_previous_manifest() -> dict[str, dict[str, Any]]:
         return {}
 
 
-def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, list]]:
-    """Write each email to disk. Returns (manifest, changes).
+def _extract_content(item: dict[str, Any]) -> tuple[str, str]:
+    """Determine filename extension and text content for any asset type.
+
+    Returns (extension, content_string).
+    """
+    views = item.get("views", {})
+    html_content = views.get("html", {}).get("content", "")
+
+    if html_content:
+        return ".html", html_content
+
+    text_content = views.get("text", {}).get("content", "")
+    if text_content:
+        return ".txt", text_content
+
+    raw_content = item.get("content", "")
+    if raw_content:
+        return ".html", raw_content
+
+    name = item.get("name", "unnamed")
+    asset_type = item.get("assetType", {}).get("displayName", "unknown")
+    subject = views.get("subjectline", {}).get("content", "")
+    fallback = f"(No extractable content)\nName: {name}\nType: {asset_type}\n"
+    if subject:
+        fallback += f"Subject: {subject}\n"
+    return ".txt", fallback
+
+
+def write_assets(
+    assets: list[dict[str, Any]],
+    directory: Path,
+    label: str,
+) -> tuple[list[dict[str, Any]], dict[str, list]]:
+    """Write each asset to disk. Returns (manifest, changes).
 
     changes = {"added": [...], "modified": [...], "deleted": [...], "unchanged": int}
-    Each entry in added/modified is {"file": str, "name": str, "modifiedBy": str, "modifiedDate": str}.
-    Modified entries also include "diff": a unified diff string.
-    Each entry in deleted is {"file": str, "old_content": str}.
     """
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    directory.mkdir(parents=True, exist_ok=True)
 
     existing_files: dict[str, str] = {}
-    for f in OUTPUT_DIR.iterdir():
-        if f.is_file() and f.name not in IGNORED_FILES:
+    for f in directory.iterdir():
+        if f.is_file() and f.name not in META_FILES:
             existing_files[f.name] = f.read_text(encoding="utf-8", errors="replace")
 
-    prev_manifest = _load_previous_manifest()
+    prev_manifest = _load_previous_manifest(directory)
 
     written_files: set[str] = set()
     manifest: list[dict[str, Any]] = []
@@ -155,25 +198,19 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
     modified: list[dict[str, str]] = []
     unchanged_count = 0
 
-    for item in emails:
-        views = item.get("views", {})
-        html_content = views.get("html", {}).get("content", "")
-        email_id = item.get("id", 0)
+    for item in assets:
+        asset_id = item.get("id", 0)
         name = item.get("name", "unnamed")
         safe_name = sanitize_filename(name)
-        meta = _email_metadata(item)
+        meta = _asset_metadata(item)
 
-        if html_content:
-            filename = f"{email_id}_{safe_name}.html"
-            content = html_content
-        else:
-            filename = f"{email_id}_{safe_name}.txt"
-            subject = views.get("subjectline", {}).get("content", "")
-            content = f"(Text Only Email - no HTML content)\nName: {name}\nSubject: {subject}\n"
+        ext, content = _extract_content(item)
+        filename = f"{asset_id}_{safe_name}{ext}"
 
-        filepath = OUTPUT_DIR / filename
+        filepath = directory / filename
+        rel_path = f"{label}/{filename}"
         change_entry = {
-            "file": filename,
+            "file": rel_path,
             "name": name,
             "modifiedBy": meta["modifiedByName"],
             "modifiedDate": meta["modifiedDate"],
@@ -190,8 +227,8 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
                 diff_lines = list(difflib.unified_diff(
                     old_content.splitlines(keepends=True),
                     content.splitlines(keepends=True),
-                    fromfile=f"a/{filename}",
-                    tofile=f"b/{filename}",
+                    fromfile=f"a/{rel_path}",
+                    tofile=f"b/{rel_path}",
                 ))
                 change_entry["diff"] = "".join(diff_lines) if diff_lines else "(metadata changed, content identical)"
                 modified.append(change_entry)
@@ -201,9 +238,10 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
         filepath.write_text(content, encoding="utf-8")
         written_files.add(filename)
 
+        views = item.get("views", {})
         manifest.append({
             "file": filename,
-            "id": email_id,
+            "id": asset_id,
             "name": name,
             "customerKey": item.get("customerKey", ""),
             "assetType": item.get("assetType", {}).get("displayName", ""),
@@ -220,12 +258,15 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
     stale = set(existing_files.keys()) - written_files
     for stale_file in sorted(stale):
         old_content = existing_files.get(stale_file, "")
-        (OUTPUT_DIR / stale_file).unlink()
-        deleted.append({"file": stale_file, "old_content": old_content})
-        print(f"  Removed stale file: {stale_file}")
+        (directory / stale_file).unlink()
+        deleted.append({
+            "file": f"{label}/{stale_file}",
+            "old_content": old_content,
+        })
+        print(f"  Removed stale file: {label}/{stale_file}")
 
     manifest.sort(key=lambda m: m["id"])
-    manifest_path = OUTPUT_DIR / "manifest.json"
+    manifest_path = directory / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, default=str) + "\n", encoding="utf-8")
 
     changes = {
@@ -235,6 +276,20 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
         "unchanged": unchanged_count,
     }
     return manifest, changes
+
+
+# ---------------------------------------------------------------------------
+# Merge change dicts from multiple asset categories
+# ---------------------------------------------------------------------------
+
+def _merge_changes(*change_dicts: dict[str, Any]) -> dict[str, Any]:
+    merged: dict[str, Any] = {"added": [], "modified": [], "deleted": [], "unchanged": 0}
+    for ch in change_dicts:
+        merged["added"].extend(ch["added"])
+        merged["modified"].extend(ch["modified"])
+        merged["deleted"].extend(ch["deleted"])
+        merged["unchanged"] += ch["unchanged"]
+    return merged
 
 
 # ---------------------------------------------------------------------------
@@ -301,7 +356,7 @@ def append_changelog(changes: dict[str, Any], timestamp: str) -> bool:
                 lines.append("</details>")
             lines.append("")
 
-    lines.append(f"### Unchanged: {unchanged} email(s)\n")
+    lines.append(f"### Unchanged: {unchanged} asset(s)\n")
     lines.append("---\n")
 
     new_entry = "\n".join(lines)
@@ -310,8 +365,8 @@ def append_changelog(changes: dict[str, Any], timestamp: str) -> bool:
     if CHANGELOG_FILE.exists():
         existing = CHANGELOG_FILE.read_text(encoding="utf-8")
 
-    header = "# SFMC Email Content Changelog\n\n"
-    if existing.startswith("# SFMC Email Content Changelog"):
+    header = "# SFMC Content Builder Changelog\n\n"
+    if existing.startswith("# SFMC"):
         body = existing[existing.index("\n") + 1:].lstrip("\n")
         CHANGELOG_FILE.write_text(header + new_entry + "\n" + body, encoding="utf-8")
     else:
@@ -331,7 +386,7 @@ def write_commit_summary(changes: dict[str, Any], timestamp: str) -> None:
     deleted = changes["deleted"]
     unchanged = changes["unchanged"]
 
-    subject = f"chore: sync SFMC email content {timestamp}"
+    subject = f"chore: sync SFMC content {timestamp}"
     stats = f"Added: {len(added)} | Modified: {len(modified)} | Deleted: {len(deleted)} | Unchanged: {unchanged}"
 
     lines = [subject, "", stats, ""]
@@ -376,31 +431,57 @@ def main() -> int:
         return 1
     print(f"Authenticated. REST endpoint: {rest_url}")
 
-    print("Fetching Content Builder emails...")
+    # --- Fetch emails ---
+    print("Fetching emails...")
     try:
-        emails = fetch_all_emails(token, rest_url)
+        emails = fetch_assets(token, rest_url, EMAIL_TYPE_IDS, "emails")
     except httpx.HTTPStatusError as exc:
         print(f"ERROR: Failed to fetch emails: {exc}")
         return 1
     print(f"Retrieved {len(emails)} email(s).")
 
-    print(f"Writing files to {OUTPUT_DIR}/...")
-    manifest, changes = write_emails(emails)
+    # --- Fetch content blocks ---
+    print("Fetching content blocks...")
+    try:
+        blocks = fetch_assets(token, rest_url, CONTENT_BLOCK_TYPE_IDS, "content-blocks")
+    except httpx.HTTPStatusError as exc:
+        print(f"ERROR: Failed to fetch content blocks: {exc}")
+        return 1
+    print(f"Retrieved {len(blocks)} content block(s).")
 
-    added = len(changes["added"])
-    modified = len(changes["modified"])
-    deleted = len(changes["deleted"])
-    unchanged = changes["unchanged"]
-    print(f"Changes: {added} added, {modified} modified, {deleted} deleted, {unchanged} unchanged")
+    # --- Write emails ---
+    print(f"Writing emails to {EMAILS_DIR}/...")
+    email_manifest, email_changes = write_assets(emails, EMAILS_DIR, "emails")
+    _print_changes("Emails", email_changes)
 
-    if added or modified or deleted:
-        append_changelog(changes, timestamp)
+    # --- Write content blocks ---
+    print(f"Writing content blocks to {CONTENT_BLOCKS_DIR}/...")
+    block_manifest, block_changes = write_assets(blocks, CONTENT_BLOCKS_DIR, "content-blocks")
+    _print_changes("Content blocks", block_changes)
+
+    # --- Changelog & commit summary ---
+    all_changes = _merge_changes(email_changes, block_changes)
+
+    has_changes = (
+        all_changes["added"] or all_changes["modified"] or all_changes["deleted"]
+    )
+    if has_changes:
+        append_changelog(all_changes, timestamp)
         print("Updated CHANGELOG.md")
 
-    write_commit_summary(changes, timestamp)
-    print(f"Done. {len(manifest)} email(s) synced.")
+    write_commit_summary(all_changes, timestamp)
+    total = len(email_manifest) + len(block_manifest)
+    print(f"Done. {total} asset(s) synced ({len(email_manifest)} emails, {len(block_manifest)} content blocks).")
 
     return 0
+
+
+def _print_changes(label: str, changes: dict[str, Any]) -> None:
+    a = len(changes["added"])
+    m = len(changes["modified"])
+    d = len(changes["deleted"])
+    u = changes["unchanged"]
+    print(f"  {label}: {a} added, {m} modified, {d} deleted, {u} unchanged")
 
 
 if __name__ == "__main__":
