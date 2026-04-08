@@ -39,6 +39,10 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "chore: sync SFMC email content $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            if [ -f email-content/.commit-summary ]; then
+              git commit -F email-content/.commit-summary
+            else
+              git commit -m "chore: sync SFMC email content $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            fi
             git push
           fi
