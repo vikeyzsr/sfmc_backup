@@ -15,6 +15,7 @@ Output:
 
 from __future__ import annotations
 
+import difflib
 import json
 import os
 import re
@@ -136,7 +137,8 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
 
     changes = {"added": [...], "modified": [...], "deleted": [...], "unchanged": int}
     Each entry in added/modified is {"file": str, "name": str, "modifiedBy": str, "modifiedDate": str}.
-    Each entry in deleted is {"file": str}.
+    Modified entries also include "diff": a unified diff string.
+    Each entry in deleted is {"file": str, "old_content": str}.
     """
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -180,10 +182,18 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
         if filename not in existing_files:
             added.append(change_entry)
         else:
-            content_changed = existing_files[filename] != content
+            old_content = existing_files[filename]
+            content_changed = old_content != content
             prev_entry = prev_manifest.get(filename, {})
             metadata_changed = prev_entry.get("modifiedDate", "") != meta["modifiedDate"]
             if content_changed or metadata_changed:
+                diff_lines = list(difflib.unified_diff(
+                    old_content.splitlines(keepends=True),
+                    content.splitlines(keepends=True),
+                    fromfile=f"a/{filename}",
+                    tofile=f"b/{filename}",
+                ))
+                change_entry["diff"] = "".join(diff_lines) if diff_lines else "(metadata changed, content identical)"
                 modified.append(change_entry)
             else:
                 unchanged_count += 1
@@ -209,8 +219,9 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
     deleted: list[dict[str, str]] = []
     stale = set(existing_files.keys()) - written_files
     for stale_file in sorted(stale):
+        old_content = existing_files.get(stale_file, "")
         (OUTPUT_DIR / stale_file).unlink()
-        deleted.append({"file": stale_file})
+        deleted.append({"file": stale_file, "old_content": old_content})
         print(f"  Removed stale file: {stale_file}")
 
     manifest.sort(key=lambda m: m["id"])
@@ -260,13 +271,35 @@ def append_changelog(changes: dict[str, Any], timestamp: str) -> bool:
         lines.append(f"### Modified ({len(modified)})")
         for entry in modified:
             lines.append(_format_change_line(entry))
-        lines.append("")
+            diff_text = entry.get("diff", "")
+            if diff_text:
+                lines.append("")
+                lines.append("<details>")
+                lines.append(f"<summary>Diff for {entry['file']}</summary>")
+                lines.append("")
+                lines.append("```diff")
+                lines.append(diff_text.rstrip())
+                lines.append("```")
+                lines.append("")
+                lines.append("</details>")
+            lines.append("")
 
     if deleted:
         lines.append(f"### Deleted ({len(deleted)})")
         for entry in deleted:
             lines.append(f"- `{entry['file']}`")
-        lines.append("")
+            old_content = entry.get("old_content", "")
+            if old_content:
+                lines.append("")
+                lines.append("<details>")
+                lines.append(f"<summary>Last known content of {entry['file']}</summary>")
+                lines.append("")
+                lines.append("```html")
+                lines.append(old_content.rstrip())
+                lines.append("```")
+                lines.append("")
+                lines.append("</details>")
+            lines.append("")
 
     lines.append(f"### Unchanged: {unchanged} email(s)\n")
     lines.append("---\n")
