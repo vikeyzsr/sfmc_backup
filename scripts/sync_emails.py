@@ -119,6 +119,18 @@ def _email_metadata(item: dict[str, Any]) -> dict[str, str]:
     }
 
 
+def _load_previous_manifest() -> dict[str, dict[str, Any]]:
+    """Load the previous manifest.json and return a lookup keyed by filename."""
+    manifest_path = OUTPUT_DIR / "manifest.json"
+    if not manifest_path.exists():
+        return {}
+    try:
+        entries = json.loads(manifest_path.read_text(encoding="utf-8"))
+        return {e["file"]: e for e in entries}
+    except (json.JSONDecodeError, KeyError):
+        return {}
+
+
 def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, list]]:
     """Write each email to disk. Returns (manifest, changes).
 
@@ -132,6 +144,8 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
     for f in OUTPUT_DIR.iterdir():
         if f.is_file() and f.name not in IGNORED_FILES:
             existing_files[f.name] = f.read_text(encoding="utf-8", errors="replace")
+
+    prev_manifest = _load_previous_manifest()
 
     written_files: set[str] = set()
     manifest: list[dict[str, Any]] = []
@@ -165,10 +179,14 @@ def write_emails(emails: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
 
         if filename not in existing_files:
             added.append(change_entry)
-        elif existing_files[filename] != content:
-            modified.append(change_entry)
         else:
-            unchanged_count += 1
+            content_changed = existing_files[filename] != content
+            prev_entry = prev_manifest.get(filename, {})
+            metadata_changed = prev_entry.get("modifiedDate", "") != meta["modifiedDate"]
+            if content_changed or metadata_changed:
+                modified.append(change_entry)
+            else:
+                unchanged_count += 1
 
         filepath.write_text(content, encoding="utf-8")
         written_files.add(filename)
