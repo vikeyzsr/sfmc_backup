@@ -175,26 +175,30 @@ def fetch_asset_detail(token: str, rest_url: str, asset_id: int) -> dict[str, An
     return resp.json()
 
 
-def enrich_text_only_emails(
-    assets: list[dict[str, Any]], token: str, rest_url: str,
+def enrich_assets(
+    assets: list[dict[str, Any]], token: str, rest_url: str, label: str,
 ) -> list[dict[str, Any]]:
-    """Re-fetch text-only emails individually so we get full content.
+    """Re-fetch every asset individually so we get the full content payload.
 
-    The bulk query endpoint sometimes omits views.text.content for
-    text-only emails. Fetching each one by ID guarantees the full payload.
+    The bulk query endpoint (/asset/v1/content/assets/query) often returns
+    truncated or missing views.html.content / views.text.content, especially
+    for template-based emails and text-only emails. Fetching each asset by
+    ID via /asset/v1/content/assets/{id} guarantees the complete payload
+    including all AMPscript, full HTML, subject lines, and preheaders.
     """
     enriched: list[dict[str, Any]] = []
-    for item in assets:
-        type_id = item.get("assetType", {}).get("id", 0)
-        if type_id == TEXT_ONLY_TYPE_ID:
-            asset_id = item.get("id", 0)
-            try:
-                full_item = fetch_asset_detail(token, rest_url, asset_id)
-                enriched.append(full_item)
-                continue
-            except httpx.HTTPStatusError:
-                print(f"  Warning: could not fetch detail for asset {asset_id}, using bulk data")
-        enriched.append(item)
+    total = len(assets)
+    for idx, item in enumerate(assets, 1):
+        asset_id = item.get("id", 0)
+        name = item.get("name", "unnamed")
+        try:
+            full_item = fetch_asset_detail(token, rest_url, asset_id)
+            enriched.append(full_item)
+        except httpx.HTTPStatusError:
+            print(f"  Warning: could not fetch detail for {label} asset {asset_id} ({name}), using bulk data")
+            enriched.append(item)
+        if idx % 25 == 0 or idx == total:
+            print(f"  [{label}] Enriched {idx}/{total}")
     return enriched
 
 
@@ -703,10 +707,9 @@ def main() -> int:
         return 1
     print(f"Retrieved {len(emails)} email(s).")
 
-    text_only_count = sum(1 for e in emails if e.get("assetType", {}).get("id") == TEXT_ONLY_TYPE_ID)
-    if text_only_count:
-        print(f"Re-fetching {text_only_count} text-only email(s) for full content...")
-        emails = enrich_text_only_emails(emails, token, rest_url)
+    if emails:
+        print(f"Re-fetching {len(emails)} email(s) individually for full content...")
+        emails = enrich_assets(emails, token, rest_url, "emails")
 
     # --- Fetch templates ---
     print("Fetching templates...")
@@ -716,6 +719,10 @@ def main() -> int:
         print(f"ERROR: Failed to fetch templates: {exc}")
         return 1
     print(f"Retrieved {len(templates)} template(s).")
+
+    if templates:
+        print(f"Re-fetching {len(templates)} template(s) individually for full content...")
+        templates = enrich_assets(templates, token, rest_url, "templates")
 
     # --- Fetch content blocks ---
     print("Fetching content blocks...")
