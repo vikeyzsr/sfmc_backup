@@ -1,5 +1,1501 @@
 # SFMC Content Builder Changelog
 
+## 2026-04-15T12:55:36Z
+
+### Modified (15)
+- `emails/139009_HK_Autocumulus_Main_Message_-_20250508_213248.html` -- "HK_Autocumulus_Main_Message - 20250508_213248" (modified in SFMC by Rishi Ganesh on 2026-04-15)
+
+<details>
+<summary>Diff for emails/139009_HK_Autocumulus_Main_Message_-_20250508_213248.html</summary>
+
+```diff
+--- a/emails/139009_HK_Autocumulus_Main_Message_-_20250508_213248.html
++++ b/emails/139009_HK_Autocumulus_Main_Message_-_20250508_213248.html
+@@ -87,8 +87,82 @@
+             /* End Outlook Font Fix */
+         </style>
+         <![endif]-->
+-  <div data-type="slot" data-key="ampscriptssjs" data-label="AMPScript/SSJS">
+-  </div>
++  <!--
++    %%[
++        SET @LastName = [LastName]
++        SET @UserGoal = [User_Goal]
++        SET @FirstName = [FirstName]
++        SET @BirthDate = [BirthDate]
++        SET @User_Score = [User_Score]
++        SET @EmailAddress = [EmailAddress]
++        SET @User_LoanTaken = [User_LoanTaken]
++        SET @User_AvgBalance = [User_AvgBalance]
++        SET @User_GoalTarget = [User_GoalTarget]
++
++        IF @User_Score == 5 THEN
++            SET @InterestRate = '7%'
++        ELSEIF @User_Score == 4 THEN
++            SET @InterestRate = '10%'
++        ELSE
++            SET @InterestRate = '12%'
++        ENDIF
++
++        IF @UserGoal == 'Car' THEN
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/4d99e5d3-f11c-475c-b00d-9dc8bb664cb1.png'
++            IF @User_Score >= 4 AND @User_Score <= 5 THEN
++                SET @SubjectLine = "Congratulations! It's time for you brand new car!"
++                SET @DynamicEmailContent = CONCAT('Hooray! You have a preapproved car loan with a minimal interest rate of ', @InterestRate, '.')
++            ELSEIF @User_Score >= 2 AND @User_Score <= 3 THEN
++                SET @SubjectLine = "You are so close to your loan approval!"
++                SET @DynamicEmailContent = CONCAT('You are so close to a preapproved car loan with a best in class interest of ', @InterestRate, '.')
++            ELSEIF @User_Score <= 1 THEN
++                SET @SubjectLine = "Apply for a car loan now!"
++                SET @DynamicEmailContent = CONCAT('You can apply for our car loan with an interest rate of ', @InterestRate, ' interest rate.')
++            ELSE
++                SET @SubjectLine = "Explore our loan offers!"
++                SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our car loan offers.'
++            ENDIF
++
++        ELSEIF @UserGoal == 'Travel' THEN
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/e35daec1-a3da-4de6-8976-0eab5c3fa4ba.jpg'
++            IF @User_Score >= 4 AND @User_Score <= 5 THEN
++                SET @SubjectLine = "Congratulations! Get ready to jet off to your dream location!"
++                SET @DynamicEmailContent = CONCAT('Hooray! You have a preapproved travel loan with a minimal interest rate of ', @InterestRate, '.')
++            ELSEIF @User_Score >= 2 AND @User_Score <= 3 THEN
++                SET @SubjectLine = "You are so close to an amazing time off!"
++                SET @DynamicEmailContent = CONCAT('You are so close to a preapproved travel loan with a best in class interest of ', @InterestRate, '.')
++            ELSEIF @User_Score <= 1 THEN
++                SET @SubjectLine = "Apply for a travel loan now!"
++                SET @DynamicEmailContent = CONCAT('You can apply for our travel loan with an interest rate of ', @InterestRate, ' interest rate.')
++            ELSE
++                SET @SubjectLine = "Explore our loan offers!"
++                SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our travel loan offers.'
++            ENDIF
++
++        ELSEIF @UserGoal == 'Home' THEN
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/818a2b5a-4a0d-4ae7-b703-2910fd300e23.jpg'
++            IF @User_Score >= 4 AND @User_Score <= 5 THEN
++                SET @SubjectLine = "Congratulations! Get ready to book your dream home!"
++                SET @DynamicEmailContent = CONCAT('Hooray! You have a preapproved home loan with a minimal interest rate of ', @InterestRate, '.')
++            ELSEIF @User_Score >= 2 AND @User_Score <= 3 THEN
++                SET @SubjectLine = "Let's plan for your future home!"
++                SET @DynamicEmailContent = CONCAT('You are so close to a preapproved home loan with a best in class interest of ', @InterestRate, '.')
++            ELSEIF @User_Score <= 1 THEN
++                SET @SubjectLine = "Apply for a home loan now!"
++                SET @DynamicEmailContent = CONCAT('You can apply for our home loan with an interest rate of ', @InterestRate, ' interest rate.')
++            ELSE
++                SET @SubjectLine = "Explore our loan offers!"
++                SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our home loan offers.'
++            ENDIF
++
++        ELSE
++            SET @SubjectLine = "Explore our loan offers!"
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/614d5d60-9996-42bc-be6f-d5f5809002c7.jpg'
++            SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our loan offers.'
++
++        ENDIF
++    ]%%
++-->
+     </head>
+     <body bgcolor="#ffffff" text="#000000" style="background-color:#FFFFFF; color:#000000; padding:0px; -webkit-text-size-adjust:none; font-size:15px; font-family:Verdana,sans-serif;">
+         <div style="font-size:0; line-height:0;">
+@@ -121,8 +195,7 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="headerlogo" data-label="Header and Logo">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #E4E4E4; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 10px; " class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="139041" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/7df102f2-493b-43d5-b7a2-8ef708bff27a.png" alt="" height="106" width="579" style="display: block; padding: 0px; text-align: center; height: 106px; width: 579px; border: 0px;"></td></tr></table></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+@@ -144,8 +217,7 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="bannerimage" data-label="Banner">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img src="%%=v(@bannerImageURL)=%%" alt="Salesforce" height="232" width="600" style="display: block; padding: 0px; text-align: center; height: 232px; width: 600px; border: 0px transparent;"></td></tr></table></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+@@ -167,8 +239,7 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="contentarea" data-label="Content">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #AEAEAE; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/7f9128b1-5e37-4682-bded-9ab99b2ce29b.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f1e53799-e6b9-49da-a534-c1aa59f5a978.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/54f969ec-7ae6-4bd9-97c3-f1a8419378b0.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="youtube follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/65446c8e-e655-4565-8d7c-a5e783173b60.png" alt="YouTube" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="linkedin follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/953ce0cf-e205-47e4-97e1-09ee03c2dab5.png" alt="LinkedIn" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: transparent; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 0px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" role="presentation" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" role="presentation" style="width: 100%;"><tr><td valign="top" class="responsive-td" style="width: 100%;"><div data-type="slot" data-key="8392q9iq86y"></div></td></tr></table></td></tr></table></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+@@ -190,8 +261,12 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="footer" data-label="Footer">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #E4E4E4; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 20px 14px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center; line-height: 115%;">
++	<span style="font-size:10px;"><span style="font-family:Arial,Helvetica,sans-serif;">Please do not reply to this email as this is sent from an unattended mailbox. If you have any queries, please contact us <a alias="here" conversion="false" data-linkto="https://" href="https://www.google.com" style="color:#333333;text-decoration:underline;" title="here">here</a>.<br>
++	<br>
++	Autocumulus Bank,&nbsp;Floor 3, Torrey Pines,<br>
++	Embassy Golf Links Business Park, Challaghatta,<br>
++	Bengaluru, Karnataka 560071</span></span></div></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+```
+
+</details>
+
+- `emails/204341_Github_Test_for_tracking.html` -- "Github Test for tracking" (modified in SFMC by Rishi Ganesh on 2026-04-08)
+
+<details>
+<summary>Diff for emails/204341_Github_Test_for_tracking.html</summary>
+
+```diff
+--- a/emails/204341_Github_Test_for_tracking.html
++++ b/emails/204341_Github_Test_for_tracking.html
+@@ -114,26 +114,74 @@
+                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                               <tr>
+                                 <td align="left" class="header" role="banner" aria-label="header" valign="top">
+-                                  <div data-type="slot" data-key="e16dfg5ng4akq7nce889jgiudi">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; " class="stylingblock-content-wrapper camarker-inner" align="center"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="101383" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/11be47db-e780-4211-a51f-af9565ac9b21.jpg" alt="THANK YOU " height="112" width="200" style="display: block; height: 112px; width: 200px; text-align: center; padding: 0px;"></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td class="responsive-td" valign="top" style="width: 100%;"><div data-type="slot" data-key="8eto73r3rhydn8oj2qf0nqaor"></div></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">
++%%[
++  Var @car
++  Set @car = InsertData("car", "coustemer id",email id", "first name", "last name", "brand name", "varient", "delivery date","5", "4444", "rk@gmail.com","rk","ch","benz","desiel","05/22/2024",null)
++  Output(v(@car))
++]%%
++
++%%[
++  Var @cars
++  
++  /* Retrieve rows */
++  /* Note that case of data extension, column name, and value don't match the source data */
++  
++  
++  Set @cars= LookupRows("car","varient","diesel")
++  Set @rowCount = RowCount(@cars)
++  
++   If @rowCount > 0 then
++    For @counter = 1 to @rowCount do
++      Set @row = Row(@cars, @counter)
++      Set @coustemerid = Field(@row, "coustemer id")
++      set @emailid = field(@row,"email id")
++      Set @firstName = Field(@row, "first name")
++      Set @lastname = Field(@row, "last name")
++      set @brandname = field(@row,"brand name")
++      set @varient = field(@row,"varient")
++      set @deliverydate = field(@row,"delivery date") 
++      
++     
++      
++      ]%%
++
++<p>
++  
++  %%=v(@coustemerid)=%% ||| %%=v(@emailid)=%% <br>
++   <br>
++  
++  
++  
++</p>%%[
++
++ Next @counter
++  EndIf
++
++]%%
++
++<p>
++</p>
++
++
++
++</td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" role="contentinfo" aria-label="footer" class="" valign="top">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/101501_TATA.html` -- "TATA " (modified in SFMC by Rishi Ganesh on 2025-05-15)
+
+<details>
+<summary>Diff for emails/101501_TATA.html</summary>
+
+```diff
+--- a/emails/101501_TATA.html
++++ b/emails/101501_TATA.html
+@@ -130,20 +130,33 @@
+                                   </tbody>
+                                 </table>
+ 
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[ set @lk = Lookup('welcome_de', 'test','email','ganesh@salesforce.com') 
++
++if @lk == True then
++
++]%% 
++
++value 1
++
++
++%%[
++else
++]%%
++
++value 2
++
++%%[endif]%%</td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top" role="article" aria-label="article">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top" role="contentinfo" aria-label="footer">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/68365_HK_Autocumulus_Main_Message.html` -- "HK_Autocumulus_Main_Message" (modified in SFMC by Kunal on 2025-05-08)
+
+<details>
+<summary>Diff for emails/68365_HK_Autocumulus_Main_Message.html</summary>
+
+```diff
+--- a/emails/68365_HK_Autocumulus_Main_Message.html
++++ b/emails/68365_HK_Autocumulus_Main_Message.html
+@@ -87,8 +87,82 @@
+             /* End Outlook Font Fix */
+         </style>
+         <![endif]-->
+-  <div data-type="slot" data-key="ampscriptssjs" data-label="AMPScript/SSJS">
+-  </div>
++  <!--
++    %%[
++        SET @LastName = [LastName]
++        SET @UserGoal = [User_Goal]
++        SET @FirstName = [FirstName]
++        SET @BirthDate = [BirthDate]
++        SET @User_Score = [User_Score]
++        SET @EmailAddress = [EmailAddress]
++        SET @User_LoanTaken = [User_LoanTaken]
++        SET @User_AvgBalance = [User_AvgBalance]
++        SET @User_GoalTarget = [User_GoalTarget]
++
++        IF @User_Score == 5 THEN
++            SET @InterestRate = '7%'
++        ELSEIF @User_Score == 4 THEN
++            SET @InterestRate = '10%'
++        ELSE
++            SET @InterestRate = '12%'
++        ENDIF
++
++        IF @UserGoal == 'Car' THEN
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/4d99e5d3-f11c-475c-b00d-9dc8bb664cb1.png'
++            IF @User_Score >= 4 AND @User_Score <= 5 THEN
++                SET @SubjectLine = "Congratulations! It's time for you brand new car!"
++                SET @DynamicEmailContent = CONCAT('Hooray! You have a preapproved car loan with a minimal interest rate of ', @InterestRate, '.')
++            ELSEIF @User_Score >= 2 AND @User_Score <= 3 THEN
++                SET @SubjectLine = "You are so close to your loan approval!"
++                SET @DynamicEmailContent = CONCAT('You are so close to a preapproved car loan with a best in class interest of ', @InterestRate, '.')
++            ELSEIF @User_Score <= 1 THEN
++                SET @SubjectLine = "Apply for a car loan now!"
++                SET @DynamicEmailContent = CONCAT('You can apply for our car loan with an interest rate of ', @InterestRate, ' interest rate.')
++            ELSE
++                SET @SubjectLine = "Explore our loan offers!"
++                SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our car loan offers.'
++            ENDIF
++
++        ELSEIF @UserGoal == 'Travel' THEN
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/e35daec1-a3da-4de6-8976-0eab5c3fa4ba.jpg'
++            IF @User_Score >= 4 AND @User_Score <= 5 THEN
++                SET @SubjectLine = "Congratulations! Get ready to jet off to your dream location!"
++                SET @DynamicEmailContent = CONCAT('Hooray! You have a preapproved travel loan with a minimal interest rate of ', @InterestRate, '.')
++            ELSEIF @User_Score >= 2 AND @User_Score <= 3 THEN
++                SET @SubjectLine = "You are so close to an amazing time off!"
++                SET @DynamicEmailContent = CONCAT('You are so close to a preapproved travel loan with a best in class interest of ', @InterestRate, '.')
++            ELSEIF @User_Score <= 1 THEN
++                SET @SubjectLine = "Apply for a travel loan now!"
++                SET @DynamicEmailContent = CONCAT('You can apply for our travel loan with an interest rate of ', @InterestRate, ' interest rate.')
++            ELSE
++                SET @SubjectLine = "Explore our loan offers!"
++                SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our travel loan offers.'
++            ENDIF
++
++        ELSEIF @UserGoal == 'Home' THEN
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/818a2b5a-4a0d-4ae7-b703-2910fd300e23.jpg'
++            IF @User_Score >= 4 AND @User_Score <= 5 THEN
++                SET @SubjectLine = "Congratulations! Get ready to book your dream home!"
++                SET @DynamicEmailContent = CONCAT('Hooray! You have a preapproved home loan with a minimal interest rate of ', @InterestRate, '.')
++            ELSEIF @User_Score >= 2 AND @User_Score <= 3 THEN
++                SET @SubjectLine = "Let's plan for your future home!"
++                SET @DynamicEmailContent = CONCAT('You are so close to a preapproved home loan with a best in class interest of ', @InterestRate, '.')
++            ELSEIF @User_Score <= 1 THEN
++                SET @SubjectLine = "Apply for a home loan now!"
++                SET @DynamicEmailContent = CONCAT('You can apply for our home loan with an interest rate of ', @InterestRate, ' interest rate.')
++            ELSE
++                SET @SubjectLine = "Explore our loan offers!"
++                SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our home loan offers.'
++            ENDIF
++
++        ELSE
++            SET @SubjectLine = "Explore our loan offers!"
++            SET @bannerImageURL = 'https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/614d5d60-9996-42bc-be6f-d5f5809002c7.jpg'
++            SET @DynamicEmailContent = 'Please visit our customer executive at our nearest branch to know more about our loan offers.'
++
++        ENDIF
++    ]%%
++-->
+     </head>
+     <body bgcolor="#ffffff" text="#000000" style="background-color:#FFFFFF; color:#000000; padding:0px; -webkit-text-size-adjust:none; font-size:15px; font-family:Verdana,sans-serif;">
+         <div style="font-size:0; line-height:0;">
+@@ -121,8 +195,7 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="headerlogo" data-label="Header and Logo">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #E4E4E4; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 10px; " class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="69437" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/dd586895-f993-4d1b-b047-6ab8f60b5159.png" alt="" height="60" width="343" style="display: block; padding: 0px; text-align: center; height: 60px; width: 343px; border: 0px;"></td></tr></table></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+@@ -144,8 +217,7 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="bannerimage" data-label="Banner">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img src="%%=v(@bannerImageURL)=%%" alt="" height="232" width="600" style="display: block; padding: 0px; text-align: center; height: 232px; width: 600px; border: 0px;"></td></tr></table></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+@@ -167,8 +239,7 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="contentarea" data-label="Content">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #AEAEAE; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/7f9128b1-5e37-4682-bded-9ab99b2ce29b.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f1e53799-e6b9-49da-a534-c1aa59f5a978.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/54f969ec-7ae6-4bd9-97c3-f1a8419378b0.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="youtube follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/65446c8e-e655-4565-8d7c-a5e783173b60.png" alt="YouTube" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="linkedin follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/953ce0cf-e205-47e4-97e1-09ee03c2dab5.png" alt="LinkedIn" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: transparent; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 0px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" role="presentation" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" role="presentation" style="width: 100%;"><tr><td valign="top" class="responsive-td" style="width: 100%;"><div data-type="slot" data-key="8392q9iq86y"></div></td></tr></table></td></tr></table></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+@@ -190,8 +261,12 @@
+                                                                                         <tbody>
+                                                                                             <tr>
+                                                                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                                                                    <div data-type="slot" data-key="footer" data-label="Footer">
+-                                                                                                    </div>
++                                                                                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #E4E4E4; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 20px 14px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center; line-height: 115%;">
++	<span style="font-size:10px;"><span style="font-family:Arial,Helvetica,sans-serif;">Please do not reply to this email as this is sent from an unattended mailbox. If you have any queries, please contact us <a alias="here" conversion="false" data-linkto="https://" href="https://www.google.com" style="color:#333333;text-decoration:underline;" title="here">here</a>.<br>
++	<br>
++	Autocumulus Bank,&nbsp;Floor 3, Torrey Pines,<br>
++	Embassy Golf Links Business Park, Challaghatta,<br>
++	Bengaluru, Karnataka 560071</span></span></div></td></tr></table>
+                                                                                                 </td>
+                                                                                             </tr>
+                                                                                         </tbody>
+```
+
+</details>
+
+- `emails/101502_BMW_CAR.html` -- "BMW CAR" (modified in SFMC by Rishi Ganesh on 2024-07-29)
+
+<details>
+<summary>Diff for emails/101502_BMW_CAR.html</summary>
+
+```diff
+--- a/emails/101502_BMW_CAR.html
++++ b/emails/101502_BMW_CAR.html
+@@ -114,26 +114,74 @@
+                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                               <tr>
+                                 <td align="left" class="header" role="banner" aria-label="header" valign="top">
+-                                  <div data-type="slot" data-key="e16dfg5ng4akq7nce889jgiudi">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; " class="stylingblock-content-wrapper camarker-inner" align="center"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="101383" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/11be47db-e780-4211-a51f-af9565ac9b21.jpg" alt="THANK YOU " height="112" width="200" style="display: block; height: 112px; width: 200px; text-align: center; padding: 0px;"></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td class="responsive-td" valign="top" style="width: 100%;"><div data-type="slot" data-key="8eto73r3rhydn8oj2qf0nqaor"></div></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">
++%%[
++  Var @car
++  Set @car = InsertData("car", "coustemer id",email id", "first name", "last name", "brand name", "varient", "delivery date","5", "4444", "rk@gmail.com","rk","ch","benz","desiel","05/22/2024",null)
++  Output(v(@car))
++]%%
++
++%%[
++  Var @cars
++  
++  /* Retrieve rows */
++  /* Note that case of data extension, column name, and value don't match the source data */
++  
++  
++  Set @cars= LookupRows("car","varient","diesel")
++  Set @rowCount = RowCount(@cars)
++  
++   If @rowCount > 0 then
++    For @counter = 1 to @rowCount do
++      Set @row = Row(@cars, @counter)
++      Set @coustemerid = Field(@row, "coustemer id")
++      set @emailid = field(@row,"email id")
++      Set @firstName = Field(@row, "first name")
++      Set @lastname = Field(@row, "last name")
++      set @brandname = field(@row,"brand name")
++      set @varient = field(@row,"varient")
++      set @deliverydate = field(@row,"delivery date") 
++      
++     
++      
++      ]%%
++
++<p>
++  
++  %%=v(@coustemerid)=%% ||| %%=v(@emailid)=%% <br>
++   <br>
++  
++  
++  
++</p>%%[
++
++ Next @counter
++  EndIf
++
++]%%
++
++<p>
++</p>
++
++
++
++</td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" role="contentinfo" aria-label="footer" class="" valign="top">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/101418_FORD.html` -- "FORD" (modified in SFMC by Rishi Ganesh on 2024-07-19)
+
+<details>
+<summary>Diff for emails/101418_FORD.html</summary>
+
+```diff
+--- a/emails/101418_FORD.html
++++ b/emails/101418_FORD.html
+@@ -120,8 +120,304 @@
+                                               <tbody>
+                                               <tr>
+                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                  <div data-type="slot" data-key="banner">
+-												  </div>
++                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><div>
++	<span style="font-family:Comic Sans MS,cursive,sans-serif;"><span style="font-size:23px;">we would like to express our most sincere thanks for your valubel buisness. your satisfaction is our first priority.</span></span></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="facebook follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Facebook</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="twitter follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Twitter</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="instagram follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Instagram</a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="youtube follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/cda3af82-7aa0-4d2d-983b-66d71f7765a6.png" alt="YouTube" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="youtube follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">YouTube</a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="101396" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/927808cf-ca29-4b12-a5ce-b16649245f25.png" alt="" height="135" width="375" style="display: block; padding: 0px; text-align: center; border: 0px solid transparent; height: 135px; width: 375px;"></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><table border="0" cellspacing="0" cellpadding="0" role="presentation"><tr><td class="innertd buttonblock" bgcolor="#007FFF" style=" border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-color: #007FFF;"><a target="_blank" class="buttonstyles" style=" font-size: 16px; font-family: Arial, helvetica, sans-serif; color: #FFFFFF; text-align: center; text-decoration: none; display: block; background-color: #007FFF; border: 1px solid #5D5D5D; padding: 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px;" href="http://" title="" alias="" conversion="false" data-linkto="http://">Click Here</a></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">
++
++
++
++
++
++
++
++<style>
++
++.ie-radio-check {
++  display: inline-block;
++  opacity: 0;
++  width: 0;
++  height: 0;
++  margin: 0;
++  margin: 0 0 0 -9999px;
++  float: left;
++  position: absolute;
++  -webkit-appearance: none;
++}
++input:checked~.ie-carousel {
++  display: block !important;
++}
++input:checked~.ie-carouselFallback {
++  display: none;
++}
++.mc-carousel-id-1721405816356 { text-align: center; }
++
++.mc-carousel-id-1721405816356 .ie-carousel-wrap {
++    
++    margin: 0 auto
++  }
++
++.ie-carousel-wrap {
++  position: relative;
++}
++.ie-carousel input:focus~.ie-thumb {
++  outline: Highlight auto 2px;
++  outline: -webkit-focus-ring-color auto 5px;
++  outline-offset: 3px;
++}
++.ie-slide {
++  width: 100%;
++  background-size: contain;
++  background-position:center;
++  background-repeat: no-repeat;
++  display: block;
++}
++.mc-carousel-id-1721405816356 .ie-slide {
++  padding-bottom: 66.54545454545455%;
++}
++.ie-thumb {
++  width: 1em;
++  height: 1em;
++  border-radius: 50%;
++  margin: .3em .1em;
++  display: inline-block;
++  border: .1em solid;
++}
++.ie-carousel:not(:has(input:checked)) .ie-start ~ .ie-thumb{
++  background:currentColor;
++}
++input:checked~.ie-thumb {
++  background: currentColor !important;
++}
++.ie-pos-arrow {
++  max-height: 0;
++  text-align: left;
++}
++.ie-arrow {
++  display: inline-block;
++  max-height: 0;
++  max-width: 0;
++  border: 1em solid transparent;
++  border-right-color: currentColor;
++  border-left-width: 0;
++  opacity: 0.99; 
++  position: relative; 
++  vertical-align: middle;
++  margin: 0 5% 0 .2em;
++}
++.mc-carousel-id-1721405816356 .ie-arrow-padding {
++  display: inline-block;
++  vertical-align: middle;
++  padding-bottom:66.54545454545455%;
++  width: 0px;
++}
++.ie-apple-clickarea {
++  height: 200px;
++  width: 3em;
++  width:clamp(45px, 3em, 70px);
++  float: left;
++  transform: translate(-5px, -50%);
++}
++
++.mc-carousel-id-1721405816356 input:checked~* .ie-pos-arrow, 
++.ie-start {
++  text-align: right;
++}
++.mc-carousel-id-1721405816356 input:checked~* .ie-pos-arrow .ie-apple-clickarea, 
++.ie-start .ie-apple-clickarea {
++  float: right;
++  transform: translate(5px, -50%);
++}
++.mc-carousel-id-1721405816356 input:checked~* .ie-arrow, 
++.ie-start .ie-arrow {
++  border-right-width: 0;
++  border-left: 1em solid;
++  margin: 0 .2em 0 5%;  
++}
++
++.mc-carousel-id-1721405816356 input:checked~.ie-start~* .ie-end {
++  display: block;
++  text-align: left;
++}
++.mc-carousel-id-1721405816356 input:checked~.ie-start~* .ie-end .ie-arrow {
++  border-left-width: 0;
++  border-right: 1em solid;
++  margin: 0 5% 0 .2em;  
++}
++.mc-carousel-id-1721405816356 input:checked+.ie-pos-arrow,
++.mc-carousel-id-1721405816356 input:checked~label label .ie-pos-arrow {
++  display: none;
++}
++.mc-carousel-id-1721405816356 input:checked~.ie-start~* .ie-end .ie-arrow .ie-apple-clickarea {
++  float: left;
++  transform: translate(-5px, -50%);
++}
++
++.ie-img-wrap {
++  display: none;
++}
++.ie-carousel .ie-mid .ie-img1{
++  display:block;
++  position:initial;
++}
++.mc-carousel-id-1721405816356 input:checked ~ label .ie-mid .ie-img1{
++  display:none;
++}
++
++
++.mc-carousel-id-1721405816356 input:checked+.ie-img1~* .ie-mid .ie-img1,
++.mc-carousel-id-1721405816356 input:checked+.ie-img2~* .ie-mid .ie-img2 { 
++  display:block;
++}
++
++.mc-carousel-id-1721405816356 input:checked ~ .ie-end {
++    display: none;
++}
++
++
++input:checked+.mc-carousel-id-1721405816356 .ie-img1 span { 
++  background-image: url(https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/11dc2cb4-609c-4faf-bd9b-c4c3d9c8f4cd.jpeg); 
++}
++input:checked+.mc-carousel-id-1721405816356 .ie-img2 span { 
++  background-image: url(https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/9983eb6f-95a8-40d6-9eef-4b76390e33f1.jpeg); 
++}
++
++.ie-carousel {
++  direction: rtl;
++}
++.ie-carousel label {
++  direction: ltr;
++}
++.ie-arrow-wrap {
++  display: table;
++  width: 100%;
++  overflow: hidden;
++}
++.ie-arrow-wrap:hover .ie-arrow{
++  transform:scale(1.1);
++}
++
++  @supports (animation: carousel-anim) and (position: absolute) {
++      .mc-carousel-id-1721405816356 .ie-img-wrap {
++        animation: mc-carousel-id-1721405816356-anim 15s infinite;
++        display: block;
++        position: absolute;
++        left: 0;
++        right: 0;
++      }
++      .ie-mid{
++        position:relative;
++      }
++
++      .mc-carousel-id-1721405816356 .ie-img1{ animation-delay:-15s }.mc-carousel-id-1721405816356 .ie-img2{ animation-delay:-7.5s }
++
++      .ie-arrow {
++        z-index: 2;
++      }
++      .mc-carousel-id-1721405816356 input:checked~* .ie-img-wrap {
++        position: initial;
++        display: none;
++        animation: none;
++      }
++      @keyframes mc-carousel-id-1721405816356-anim {
++        0%{z-index:1;opacity:1; }
++        49%{opacity:1;}
++        50%{z-index:1;}
++        51%{z-index:0;opacity:0;}
++        99%{z-index:0;opacity:0; }
++        100%{opacity:1}
++      }
++      .mc-carousel-id-1721405816356:has(input) .ie-thumb {
++        animation-name: mc-carousel-id-1721405816356-thumb;
++        animation-duration: 15s;
++        animation-iteration-count: infinite;
++        background:currentColor;
++      }
++      .mc-carousel-id-1721405816356:has(input:checked) .ie-thumb {
++        animation:none;
++        background:none;
++      }
++      @keyframes mc-carousel-id-1721405816356-thumb {
++        0%,100% { background:currentColor; }
++        50% { background:currentColor; }
++        51%, 99% { background:none; }
++      }
++    }
++    @media (prefers-reduced-motion) {    
++      .ie-img-wrap {
++        position: initial;
++        display: none;
++        animation: none;
++      }
++    }  
++  
++</style>
++
++<style>
++.& .ie-carousel input:focus~.ie-thumb{
++  outline: Highlight auto 5px;
++} 
++</style>
++
++<!--[if mso]><!-->
++<input type="radio" id="interactive" style="display:none;display:contents;mso-hide:all;" checked="">
++  <div class="ie-carousel mc-carousel-id-1721405816356" style="display:none">
++    <div role="group" aria-label="carousel" class="ie-carousel-wrap">
++
++<label role="presentation">
++  <input type="radio" name="mc-carousel-id-1721405816356" class="ie-radio-check" aria-label="">
++  <div class="ie-pos-arrow ie-img1">
++    <div class="ie-arrow-wrap">
++      <div class="ie-arrow-padding"></div>
++      <div class="ie-arrow"><div class="ie-apple-clickarea"></div></div>
++    </div>
++  </div>
++  <div class="ie-pos-arrow ie-start">
++    <div class="ie-arrow-wrap">
++      <div class="ie-arrow-padding"></div>
++      <div class="ie-arrow"><div class="ie-apple-clickarea"></div></div>
++    </div>
++  </div>
++<label role="presentation">
++  <input type="radio" name="mc-carousel-id-1721405816356" class="ie-radio-check" aria-label="">
++  <div class="ie-pos-arrow ie-img2">
++    <div class="ie-arrow-wrap">
++      <div class="ie-arrow-padding"></div>
++      <div class="ie-arrow"><div class="ie-apple-clickarea"></div></div>
++    </div>
++  </div>
++  <div class="ie-pos-arrow ie-end">
++    <div class="ie-arrow-wrap">
++      <div class="ie-arrow-padding"></div>
++      <div class="ie-arrow"><div class="ie-apple-clickarea"></div></div>
++    </div>
++  </div>
++<label role="presentation">
++  <div class="ie-mid">
++
++<span class="ie-img-wrap ie-img2"><span class="ie-slide" role="img" title=""></span></span>
++
++<span class="ie-img-wrap ie-img1"><span class="ie-slide" role="img" title=""></span></span>
++
++  </div>
++</label>
++
++    <div class="ie-thumb ie-img2"><span></span></div>
++  </label>
++  
++    <div class="ie-thumb ie-img1"><span></span></div>
++  </label>
++  
++  </div>
++</div>
++<!--<![endif]-->
++
++
++
++
++<div class="ie-carouselFallback" style="text-align:center">
++  
++    <span style="display:block;"><img src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/11dc2cb4-609c-4faf-bd9b-c4c3d9c8f4cd.jpeg" alt="" width="100%" style="max-width:100%; vertical-align:middle"></span>
++    
++</div></td></tr></table>
+                                                 </td>
+                                               </tr>
+                                               </tbody>
+```
+
+</details>
+
+- `emails/101416_ravi.html` -- "ravi" (modified in SFMC by Rishi Ganesh on 2024-07-19)
+
+<details>
+<summary>Diff for emails/101416_ravi.html</summary>
+
+```diff
+--- a/emails/101416_ravi.html
++++ b/emails/101416_ravi.html
+@@ -114,26 +114,23 @@
+                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                               <tr>
+                                 <td align="left" class="header" role="banner" aria-label="header" valign="top">
+-                                  <div data-type="slot" data-key="e16dfg5ng4akq7nce889jgiudi">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; " class="stylingblock-content-wrapper camarker-inner" align="center"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="101406" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/ca79b67e-9423-4ba0-86b7-ce3f962e4502.jpeg" alt="THANK YOU " width="200" style="display: block; height: auto; width: 100%; text-align: center; padding: 0px;"></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td class="responsive-td" valign="top" style="width: 100%;"><div data-type="slot" data-key="8eto73r3rhydn8oj2qf0nqaor"></div></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" role="contentinfo" aria-label="footer" class="" valign="top">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/100378_female_emaIl.html` -- "female emaIl" (modified in SFMC by Rishi Ganesh on 2024-07-12)
+
+<details>
+<summary>Diff for emails/100378_female_emaIl.html</summary>
+
+```diff
+--- a/emails/100378_female_emaIl.html
++++ b/emails/100378_female_emaIl.html
+@@ -114,26 +114,23 @@
+                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                               <tr>
+                                 <td align="left" class="header" role="banner" aria-label="header" valign="top">
+-                                  <div data-type="slot" data-key="e16dfg5ng4akq7nce889jgiudi">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; " class="stylingblock-content-wrapper camarker-inner" align="center"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="77274" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/a9feb2bd-57b9-47b7-9060-fd1e4353faf2.png" alt="Image placeholder" height="197" width="200" style="display: block; height: 197px; width: 200px; text-align: center; padding: 0px;"></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td class="responsive-td" valign="top" style="width: 100%;"><div data-type="slot" data-key="8eto73r3rhydn8oj2qf0nqaor"></div></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" role="contentinfo" aria-label="footer" class="" valign="top">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/100377_male_email.html` -- "male email" (modified in SFMC by Rishi Ganesh on 2024-07-12)
+
+<details>
+<summary>Diff for emails/100377_male_email.html</summary>
+
+```diff
+--- a/emails/100377_male_email.html
++++ b/emails/100377_male_email.html
+@@ -114,26 +114,23 @@
+                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                               <tr>
+                                 <td align="left" class="header" role="banner" aria-label="header" valign="top">
+-                                  <div data-type="slot" data-key="e16dfg5ng4akq7nce889jgiudi">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; " class="stylingblock-content-wrapper camarker-inner" align="center"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="77274" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/a9feb2bd-57b9-47b7-9060-fd1e4353faf2.png" alt="Placeholder image" height="197" width="200" style="display: block; height: 197px; width: 200px; text-align: center; padding: 0px;"></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td class="responsive-td" valign="top" style="width: 100%;"><div data-type="slot" data-key="jy1e7lxs8c4wpfhlo5usaif6r"></div></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" role="contentinfo" aria-label="footer" class="" valign="top">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/100333_CONTEST_WINNER.html` -- "CONTEST WINNER" (modified in SFMC by Rishi Ganesh on 2024-07-11)
+
+<details>
+<summary>Diff for emails/100333_CONTEST_WINNER.html</summary>
+
+```diff
+--- a/emails/100333_CONTEST_WINNER.html
++++ b/emails/100333_CONTEST_WINNER.html
+@@ -114,26 +114,23 @@
+                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                               <tr>
+                                 <td align="left" class="header" role="banner" aria-label="header" valign="top">
+-                                  <div data-type="slot" data-key="e16dfg5ng4akq7nce889jgiudi">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; " class="stylingblock-content-wrapper camarker-inner" align="center"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="77274" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/a9feb2bd-57b9-47b7-9060-fd1e4353faf2.png" alt="Placeholder image" height="197" width="200" style="display: block; height: 197px; width: 200px; text-align: center; padding: 0px;"></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="46rmc6vjl9mtalb42aa89z4cxr">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td><table cellspacing="0" cellpadding="0" style="width: 100%;"><tr><td class="responsive-td" valign="top" style="width: 100%;"><div data-type="slot" data-key="jy1e7lxs8c4wpfhlo5usaif6r"></div></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" class="" valign="top">
+-                                  <div data-type="slot" data-key="pt7lnaathjqvxndvyt7rv0a4i">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: left; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="left"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="facebook follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Facebook</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/f071eec4-5672-4190-b5c4-03c64fd3f5bd.png" alt="Twitter" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="twitter follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Twitter</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="pinterest follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/23e506de-1872-4b15-bc53-4678e591b3d8.png" alt="Pinterest" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="pinterest follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Pinterest</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="instagram follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a52c2f3b-22ab-4dfc-ad5e-c4b50bec5650.png" alt="Instagram" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="instagram follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Instagram</a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="snapchat follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/99c991ce-3026-4e51-931c-35907dcaaf70.png" alt="Snapchat" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="snapchat follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Snapchat</a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table>
+                                 </td>
+                               </tr>
+                               <tr>
+                                 <td align="left" role="contentinfo" aria-label="footer" class="" valign="top">
+-                                  <div data-type="slot" data-key="pczhw1uoji7j152yz5kjiqkt9">
+-                                  </div>
++                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="text-align: center; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner" align="center"><div style="text-align: center;"><a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a>&nbsp;&nbsp; |&nbsp;&nbsp;<a alias="" conversion="false" href="http://" style="color:#181818;text-decoration:none;" title="">LINK</a></div></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding-top: 10px; padding-right: 10px; padding-left: 10px; " class="stylingblock-content-wrapper camarker-inner"><div style="text-align: center;"><span style="font-size:12px;">Quo ea modus impedit omittantur. Mel suavitate comceptam et, in vim nihil tibique. Is vis epicuri fierent accusamus, enim liveravisse necessitatibus no eos. </span></div>
++</td></tr></table>
+                                 </td>
+                               </tr>
+                             </table>
+```
+
+</details>
+
+- `emails/74626_Lead_Engagement.html` -- "Lead Engagement" (modified in SFMC by Rishi Ganesh on 2024-07-07)
+
+<details>
+<summary>Diff for emails/74626_Lead_Engagement.html</summary>
+
+```diff
+--- a/emails/74626_Lead_Engagement.html
++++ b/emails/74626_Lead_Engagement.html
+@@ -120,8 +120,25 @@
+                                               <tbody>
+                                               <tr>
+                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                  <div data-type="slot" data-key="banner">
+-												  </div>
++                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="74628" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/a619aa1e-2299-4d75-95dd-00b1037d98c8.jpg" alt="" width="5121" style="display: block; padding: 0px; text-align: center; height: auto; width: 100%; border: 0px;"></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="74632" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/546968ce-183e-4986-9696-0bd083933f8e.png" alt="" width="200" style="display: block; padding: 0px; text-align: center; height: auto; width: 100%; border: 0px;"></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><table border="0" cellspacing="0" cellpadding="0" role="presentation"><tr><td class="innertd buttonblock" bgcolor="#5D5D5D" style=" border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-color: #5D5D5D;"><a target="_blank" class="buttonstyles" style=" font-size: 16px; font-family: Arial, helvetica, sans-serif; color: #FFFFFF; text-align: center; text-decoration: none; display: block; background-color: #5D5D5D; border: 1px solid #5D5D5D; padding: 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px;" href="http://" title="" alias="" conversion="false" data-linkto="http://">Click Here</a></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: transparent; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 10px; " class="stylingblock-content-wrapper camarker-inner"><table cellpadding="0" cellspacing="0" class="socialshare-wrapper" width="100%"><tr><td align="center"><table cellpadding="0" cellspacing="0" align="center"><tr><td align="center"><!--[if mso]><table border="0" cellspacing="0" cellpadding="0"><tr><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="facebook follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/e76b988d-8feb-4d15-b8d9-1ccf4bee17cd.png" alt="Facebook" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="facebook follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">Facebook</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="twitter follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/1a75cdcc-523f-45b0-9a7a-dc4b681bcf12.png" alt="X" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="twitter follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">X</a></td></tr></table><!--[if mso]></td><td style="padding-right:10px;"><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="linkedin follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/43511da8-7916-47f0-8134-5b478ce22f3c.png" alt="LinkedIn" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="linkedin follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">LinkedIn</a></td></tr></table><!--[if mso]></td><td><![endif]--><table class="socialshare-innertable" style="display: inline-block"><tr><td style="padding:5px 10px"><a href="" alias="youtube follow"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/cda3af82-7aa0-4d2d-983b-66d71f7765a6.png" alt="YouTube" width="24" height="24" style="display: block;; width: 24px !important; height: 24px !important"></a></td><td style="padding-right: 10px;"><a href="" alias="youtube follow" style="text-decoration: none; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: rgb(51, 51, 51);">YouTube</a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><table width="100%" cellspacing="0" cellpadding="0" role="presentation"><tr><td align="center"><img data-assetid="74625" src="https://image.s4.sfmc-content.com/lib/fe32117276640578751376/m/1/6218dcf6-be45-4f48-8163-59bff1954f03.jpg" alt="" width="1500" style="display: block; padding: 0px; text-align: center; border: 0px solid transparent; height: auto; width: 100%;"></td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: transparent; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 20px 2px; " class="stylingblock-content-wrapper camarker-inner"><table align="center" border="0" cellpadding="0" cellspacing="0" width="550">
++	
++		<tr>
++			<td align="center" class="customfontbody" style="font-family:  Arial, Helvetica, sans-serif; font-size:17px; line-height:23px; color:#000000; text-align:center;   " valign="top">
++				To get in touch with our experts and know more:</td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: transparent; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 15px 0px; " class="stylingblock-content-wrapper camarker-inner"><table align="center" border="0" cellpadding="0" cellspacing="0" width="550">
++	
++		<tr>
++			<td align="center" class="customfontbody" style="font-family:  Arial, Helvetica, sans-serif; font-size:17px; line-height:23px; color:#000000; text-align:center;   " valign="top">
++				At Astro Health, we're dedicated to providing clinicians with the most advanced tools to improve patient outcomes. We understand that precision diagnosis and personalized treatment are essential for delivering the best possible care, and our products are designed to facilitate both</td></tr><tr>
++			<td align="center" class="customfontbody" style="font-family:  Arial, Helvetica, sans-serif; font-size:17px; line-height:23px; color:#000000; text-align:center;  padding-top:15px;    " valign="top">
++				We're constantly working to improve our products and stay up-to-date with the latest advancements in healthcare technology. We're proud to be a part of the healthcare industry and to support those who are dedicated to improving patient outcomes</td></tr><tr>
++			<td align="center" class="customfontbody" style="font-family:  Arial, Helvetica, sans-serif; font-size:17px; line-height:23px; color:#000000; text-align:center; padding-top:15px;  " valign="top">
++				Hi %%Email%%</td></tr></table></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: transparent; min-width: 100%; " class="stylingblock-content-wrapper"><tr><td style="padding: 15px 0px; " class="stylingblock-content-wrapper camarker-inner"><table align="center" border="0" cellpadding="0" cellspacing="0" width="550">
++	
++		<tr>
++			<td align="center" class="customfontbody" style="font-family:  Arial, Helvetica, sans-serif; font-size:17px; line-height:23px; color:#000000; text-align:center; padding-top:15px;  " valign="top">
++				Astro Health focuses is on providing clinicians with the tools they need to make informed decisions about patient care. We believe that lead awareness is an essential part of this process and that by raising awareness about the risks associated with lead exposure, we can help clinicians better protect their patients.</td></tr><tr>
++			<td align="center" class="customfontbody" style="font-family:  Arial, Helvetica, sans-serif; font-size:17px; line-height:23px; color:#000000; text-align:center; padding-top:15px;  " valign="top">
++				Our commitment towards Healthcare is unwavering, and we will continue to work tirelessly to ensure that healthcare providers have access to the latest information and technology.</td></tr></table></td></tr></table>
+                                                 </td>
+                                               </tr>
+                                               </tbody>
+```
+
+</details>
+
+- `emails/99819_tesrtnb.html` -- "tesrtnb,," (modified in SFMC by Rishi Ganesh on 2024-07-07)
+
+<details>
+<summary>Diff for emails/99819_tesrtnb.html</summary>
+
+```diff
+--- a/emails/99819_tesrtnb.html
++++ b/emails/99819_tesrtnb.html
+@@ -83,8 +83,7 @@
+             /* End Outlook Font Fix */
+         </style>
+         <![endif]-->
+-  <div data-type="slot" data-key="ampscriptssjs" data-label="AMPScript/SSJS">
+-  </div>
++  <!--%%[]%%-->
+     </head>
+     <body bgcolor="#ffffff" text="#000000" style="background-color:#FFFFFF; color:#000000; padding:0px; -webkit-text-size-adjust:none; font-size:15px; font-family:Verdana,sans-serif;">
+         <div style="font-size:0; line-height:0;">
+```
+
+</details>
+
+- `emails/51303_BT_Test.html` -- "BT Test" (modified in SFMC by Rishi Ganesh on 2022-12-22)
+
+<details>
+<summary>Diff for emails/51303_BT_Test.html</summary>
+
+```diff
+--- a/emails/51303_BT_Test.html
++++ b/emails/51303_BT_Test.html
+@@ -120,8 +120,211 @@
+                                               <tbody>
+                                               <tr>
+                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                  <div data-type="slot" data-key="banner">
+-												  </div>
++                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[
++  Set @data = Concat('{"trigger_payload":"', data, '"}')
++  Set @mid = memberid
++]%%
++
++<script runat="server">
++  Platform.Load("Core", "1");
++  try {
++    var defaults = {
++      "link" : "Link",
++      "image_link" : "ImageLink",
++      "product_code" : "ProductCode",
++      "name" : "Name", 
++      "regular_price" : "RegularPrice", 
++      "sale_price" : "SalePrice", 
++      "sku_id" : "SkuID"
++    };
++    
++    // Data from block settings
++    var settings = {"fields":{"image_link":"ImageLink","name":"ProductName","regular_price":"RegularPrice"},"maxItems":3,"sortBy":"item_order","sortDirection":"desc","desktopCols":0,"mobileCols":0,"useSalePricing":false};
++    var markupFragments = {
++      "header" : '<div class="wrapper" align="center" style="--max-table-width: 600px; --max-column-width: 210px; width: 100%; table-layout: fixed; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; background-color: #ffffff;"><div class="webkit" style="max-width: 600px; margin: 0 auto;"><!--[if (gte mso 9)|(IE)]><table width="600" align="center"><tr><td><![endif]--><table class="outer" align="center" style="border-spacing: 0; font-family: sans-serif; color: #333333; margin: 0 auto; width: 100%; max-width: 600px;"><tr><td class="multi-column" style="padding: 0; text-align: center; font-size: 0; padding-top: 10px; padding-bottom: 10px;">',
++      "product" : [
++        '<div class="column" style="--max-table-width: 600px; --max-column-width: 210px; width: 100%; max-width: 210px; display: inline-block; vertical-align: top;"><table width="100%" align="center" style="border-spacing: 0; font-family: sans-serif; color: #333333;"><tr> <td style="padding: 0;">',
++'<!--[if (gte mso 9)|(IE)]>',
++'<table width="210" align="center"><tr><td width="210" valign="top">',
++'<![endif]-->',
++'<a href="httpgetwrap|--product_link--">',
++'<!--[if (gte mso 9)|(IE)]>',
++'<img src="--image_link--" width="210" alt class="mcbt_image_link" align="center" style="--max-table-width: 600px; --max-column-width: 210px; border: 0; width: 100%; max-width: 210px; height: auto;">',
++'</td></tr></table>',
++'<div style="display:none;width:0px;max-height:0px;overflow:hidden;mso-hide:all;height:0;font-size:0;max-height:0;line-height:0;margin:0 auto;">',
++'<![endif]-->',
++'<img src="--image_link--" alt class="mcbt_image_link" style="border: 0; width: 100%; max-width: 210px; height: auto;">',
++'<!--[if (gte mso 9)|(IE)]>',
++'</div>',
++'<![endif]-->',
++'</a>',
++'</td></tr><tr><td style="padding: 0;"><table class="text_table" align="center" style="border-spacing: 0; font-family: sans-serif; color: #333333; width: 100%; max-width: 210px;"><tr><td class="mcbt_name" style="padding: 0; font-size: 0.8125rem; padding-top: 10px; text-align: center; width: 100%; max-width: 210px;">--name--</td></tr><tr><td class="mcbt_regular_price" style="padding: 0; font-size: 0.8125rem; padding-top: 10px; text-align: center; width: 100%; max-width: 210px;">$--regular_price--</td></tr>',
++'</table></td></tr><tr></tr></table></div>'
++      ],
++      "attributes" : {"image_link":"image_link","product_link":"link","name":"name","regular_price":"regular_price"},
++      "footer" : '</td></tr></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></div>',
++      "salePricingStyle" : "undefined"
++    };
++    var defaultProductMarkup = markupFragments["product"].join("");
++    
++    // Read data from MC
++    var data = Platform.Variable.GetValue("@data");
++    var mid = Platform.Variable.GetValue("@mid");
++    var event_locale = Platform.Variable.GetValue("@event_locale");
++    
++    // Build the url
++    var protocol = "https";
++    var hostname = mid + ".recs.igodigital.com";
++    var qs = "?item_count=" + settings["maxItems"] + "&sort_by=" + settings["sortBy"] + "&sort_direction=" + settings["sortDirection"];
++    var includes = [];
++    for (var key in settings["fields"]) {
++      if(defaults[key] == null) {
++        includes = includes.concat(settings["fields"][key]);
++      }
++    }
++    if(includes.length > 0) {
++      qs += "&include=" + includes.join("|")
++    }
++    if(event_locale){
++      qs += "&locale=" + event_locale
++    }
++    var url = protocol + "://" + hostname + "/" + mid + "/trigger" + qs;
++        
++    var result = HTTP.Post(url, "application/json", data, []);
++    if (result.StatusCode == 200) {
++      var response = Platform.Function.ParseJSON(result.Response[0]);
++
++      // Expose fields in response as Ampscript variables
++      for(var responseField in response) {
++        var value = response[responseField];
++        
++        if(responseField === "products" || responseField === "current_cart") {
++          var prefix = (responseField === "products") ? "@item_" : "@cart_";
++          for(var i=0; i<value.length; i++) {
++            for(var itemField in value[i]) {
++              var name = prefix + itemField + "_" + (i+1);
++              var val = value[i][itemField];
++              Platform.Variable.SetValue(name, val);
++            }
++          }
++        }
++        else if(responseField === "user") {
++          var prefix = "@user_";
++          for(var userField in value) {
++            var name = prefix + userField;
++            var val = value[userField];
++            Platform.Variable.SetValue(name, val);
++          }
++        }
++        else {
++          Platform.Variable.SetValue("@"+responseField, value);
++        }
++      }
++      
++      // Use abandoned items or current items?
++      var useRecentItems = false;
++      if (useRecentItems && response["current_cart"] !== undefined) {
++        var products = response["current_cart"];
++        if(products.length === 0) {
++          Write("User has an empty cart so stop send");
++          Platform.Function.RaiseError("Trigger no longer valid - User has an empty cart.", true, "statusCode","3");
++        }
++      } else {
++        var products = response["products"];
++      }
++
++      // Exit the send if the user made a purchase since the trigger
++      if (response["purchased"] === true) {
++        Write("User has purchased so stop send");
++        Platform.Function.RaiseError("Trigger no longer valid - User has purchased since trigger.", true, "statusCode","3");
++      };
++      
++      // true to use salePricing style, false if not
++      var useSalePricing = false;
++      
++      // Write email contents
++      var content = response["tracking_pixel"];
++      content = content + markupFragments["header"].replace('\"', '"');
++      content = content + '<!--[if (gte mso 9)|(IE)]>';
++      content = content + '<table>';
++      content = content + '<![endif]-->';
++      for (var i=0; i < products.length; i++) {
++        var product = products[i];
++        var productAttributes = markupFragments["attributes"];
++        
++        content = content + '<!--[if (gte mso 9)|(IE)]>';
++        if(i % 2 === 0) {
++          content = content + '<tr>';
++        }
++        content = content + '<td width="210px" valign="top">';
++        content = content + '<![endif]-->';
++        
++        var productMarkup = defaultProductMarkup;
++        if(useSalePricing) {
++          if(productMarkup.indexOf("regular_price") > 0 && product["sale_price"] < product["regular_price"] && product["sale_price"] > 0) {
++            var matches = productMarkup.match('(class="mcbt_regular_price" style=")(.*?)"');
++            if(matches != null && matches.length > 0) {
++              productMarkup = productMarkup.replace(matches[0], matches[1] + matches[2] + ' ' + markupFragments["salePricingStyle"] + '"');
++            }
++          }
++          else if(product["sale_price"] <= 0) {
++            var matches = productMarkup.match('(class="mcbt_sale_price" style=")(.*?)"');
++            if(matches != null && matches.length > 0) {
++              productMarkup = productMarkup.replace(matches[0], matches[1] + matches[2] + ' display:none"');
++            }
++          }
++        }
++        
++        for(var markupKey in productAttributes) {
++          var productKey = productAttributes[markupKey];
++          var pattern = "--" + markupKey + "--";
++          
++          var value = product[productKey];
++          if (markupKey === "rating") {
++            value = Math.round((value / 5) * 98);
++          }
++          else if (markupKey === "regular_price" || markupKey === "sale_price") {
++            var parsed = value.toString().split(".");
++            if (parsed.length > 1 && parsed[1].length === 1 && parsed[1] !== "0") {
++              value = value.toString() + "0";
++            }
++          }
++          else if (markupKey === "product_link") {
++            value = "%%=RedirectTo('" + value + "')=%%";
++          }
++          
++          while(productMarkup.indexOf(pattern) > 0) {
++            productMarkup = productMarkup.replace(pattern, function(){return value});
++          }
++        }
++        
++        content = content + productMarkup.replace(/\\"/g, '"');
++        content = content + '<!--[if (gte mso 9)|(IE)]>';
++        content = content + '</td>';
++        if( (i+1) % columnCount === 0 || i === products.length-1) {
++          content = content + '</tr>';
++        }
++        content = content + '<![endif]-->';
++      }
++      content = content + '<!--[if (gte mso 9)|(IE)]>';
++      content = content + '</table>';
++      content = content + '<![endif]-->';
++      content = content + markupFragments["footer"].replace('\"', '"');
++      
++      // Set Markup in Ampscript var
++      Platform.Variable.SetValue("@content", content);
++    }
++    else {
++      Write("Unable to retrieve product information: statusCode=" + result.StatusCode);
++      Platform.Function.RaiseError("Quit send.", true, "statusCode","3");
++    }
++  } catch(e) {
++    Write(e);
++    Platform.Function.RaiseError("Quit send.", true, "statusCode","3");
++  } 
++</script>
++%%=TreatAsContent(@content)=%%
++</td></tr></table>
+                                                 </td>
+                                               </tr>
+                                               </tbody>
+```
+
+</details>
+
+- `emails/50428_DM_TEST.html` -- "DM TEST" (modified in SFMC by Rishi Ganesh on 2022-12-06)
+
+<details>
+<summary>Diff for emails/50428_DM_TEST.html</summary>
+
+```diff
+--- a/emails/50428_DM_TEST.html
++++ b/emails/50428_DM_TEST.html
+@@ -120,8 +120,109 @@
+                                               <tbody>
+                                               <tr>
+                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                  <div data-type="slot" data-key="banner">
+-												  </div>
++                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
++Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
++Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
++Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
++Set @imageCompoundValue = AttributeValue("1670335280711") /* Passed for the DM Email Preview */
++IF (NOT Empty(@sfOrgId) AND NOT Empty(@journeyId)) THEN
++    Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
++    Set @personalizeId = Concat(@objectId,_emailId,"1670335280711")
++ENDIF
++IF EMPTY(@imageCompoundValue) THEN
++    IF NOT Empty(@personalizeDE) THEN
++        /* Try to pull from DE */
++        set @rows = LookupRows(@personalizeDE,"id",@personalizeId)
++        IF RowCount(@rows) == 0 THEN /* No Personalization Found fall back to default */
++            set @imageUrl = ''
++            set @altText = ''
++            set @hyperLink = ''
++        ELSE
++            set @row = ROW(@rows, 1)
++            set @valueObj = FIELD(@row, 'value')
++            set @imageUrl = RegExMatch(@valueObj, 'imageUrl="(.*?)"(?:||$)', 1)
++            set @altText = RegExMatch(@valueObj, 'altText="(.*?)"(?:||$)', 1)
++            set @hyperLink = RegExMatch(@valueObj, 'hyperLink="(.*?)"(?:||$)', 1)
++        ENDIF
++    ELSE /* No p13n or a DE then just Fallback to Default */
++        set @imageUrl = ''
++        set @altText = ''
++        set @hyperLink = ''
++    ENDIF
++ELSE
++    /* DM Email Preview */
++    set @valueObj = @imageCompoundValue
++    set @imageUrl = RegExMatch(@valueObj, 'imageUrl="(.*?)"(?:||$)', 1)
++    set @altText = RegExMatch(@valueObj, 'altText="(.*?)"(?:||$)', 1)
++    set @hyperLink = RegExMatch(@valueObj, 'hyperLink="(.*?)"(?:||$)', 1)
++ENDIF
++
++IF EMPTY(@hyperLink) THEN
++    set @hyperLinkHtmlOpen = ''
++    set @hyperLinkHtmlClose = ''
++ELSE
++    set @hyperLinkHtmlOpen = Concat('<a href="', @hyperLink,'">')
++    set @hyperLinkHtmlClose = '</a>'
++ENDIF
++
++IF EMPTY(@imageUrl) THEN /* The Default set is not valid so display nothing */
++    Set @displayedContent = ''
++ELSE
++    Set @displayedContent = Concat('<table class="dm-image-block" data-dm-block-id="1670335280711" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center">', @hyperLinkHtmlOpen, '<img src="', @imageUrl , '" alt="', @altText , '" width="100%" style="display: block; padding: 0px; text-align: center; height: auto; width: 100%; border: 0px;">', @hyperLinkHtmlClose, '</td></tr></table>')ENDIF
++ENDIF
++]%%
++
++%%=v(@displayedContent)=%%
++%%[/* DO NOT TOUCH */]%%</td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
++Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
++Set @freeText = AttributeValue("1670335334652") /* Passed for the DM Email Preview */
++Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
++Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
++Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
++Set @personalizeId = Concat(@objectId,_emailId,"1670335334652")
++IF EMPTY(@freeText) THEN
++    Set @freeTextMsg = Lookup(@personalizeDE,"value","id",@personalizeId)
++ELSE THEN
++    Set @freeTextMsg = @freeText
++ENDIF
++Set @freeTextMsg = Concat('<div class="dm-free-text-block" data-dm-block-id="1670335334652">', @freeTextMsg, '</div>')
++]%%
++%%=v(@freeTextMsg)=%%
++%%[/* DO NOT TOUCH */]%%</td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
++Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
++Set @richText = AttributeValue("1670335380995") /* Passed for the DM Email Preview */
++Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
++Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
++Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
++Set @personalizeId = Concat(@objectId,_emailId,"1670335380995")
++IF EMPTY(@richText) THEN
++    Set @richTextMsg = Lookup(@personalizeDE,"value","id",@personalizeId)
++ELSE THEN
++    Set @richTextMsg = @richText
++ENDIF
++Set @richTextMsg = Concat('<div class="dm-rich-text-block" data-dm-block-id="1670335380995">', @richTextMsg, '</div>')
++]%%
++%%=v(@richTextMsg)=%%
++%%[*/ DO NOT TOUCH */]%%</td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
++Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
++Set @variableName = AttributeValue("1670335402300") /* Passed for the DM Email Preview */
++Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
++Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
++Set @blockPlaceholder = '<div class="dm-message-settings-block" data-dm-block-id="1670335402300"></div>'
++IF (NOT Empty(@sfOrgId) AND NOT Empty(@journeyId)) THEN
++    Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
++    Set @personalizeId = Concat(@objectId,_emailId,"1670335402300")
++ENDIF
++IF EMPTY(@variableName) THEN
++    IF NOT Empty(@personalizeDE) THEN
++        Set @variableName = Lookup(@personalizeDE,"value","id",@personalizeId)
++    ELSE
++        Set @variableName = ''
++    ENDIF
++ENDIF
++]%%
++%%=v(@blockPlaceholder)=%%
++%%[/* DO NOT TOUCH */]%%</td></tr></table>
+                                                 </td>
+                                               </tr>
+                                               </tbody>
+```
+
+</details>
+
+- `emails/50101_IS_Prod_Recs_OTE.html` -- "IS_Prod_Recs_OTE" (modified in SFMC by Rishi Ganesh on 2022-12-01)
+
+<details>
+<summary>Diff for emails/50101_IS_Prod_Recs_OTE.html</summary>
+
+```diff
+--- a/emails/50101_IS_Prod_Recs_OTE.html
++++ b/emails/50101_IS_Prod_Recs_OTE.html
+@@ -120,8 +120,41 @@
+                                               <tbody>
+                                               <tr>
+                                                 <td class="responsive-td" valign="top" style="width: 100%;">
+-                                                  <div data-type="slot" data-key="banner">
+-												  </div>
++                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><!-- start evergage recs block (Prod Recs) -->
++<table cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="table-layout: fixed;">
++    
++        <tr>
++            <td width="100%">
++                <div class="evergage-block" style="max-height: 100%; max-width: 100%; position: relative; overflow: hidden; text-align: center; ">
++                    <div class="evergage-recs" style="display: table; width: 100%; max-height: 100%;">
++                        <span class="evergage-rec" style="display: inline-block; ">
++                            <a href="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/1/detail?userId=%%emailaddr%%">
++                                <img src="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/1/summary.png?userId=%%emailaddr%%" style="max-width: 100%; border: 0;" border="0" alt="">
++                            </a>
++                        </span>
++                        <span class="evergage-rec" style="display: inline-block; ">
++                            <a href="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/2/detail?userId=%%emailaddr%%">
++                                <img src="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/2/summary.png?userId=%%emailaddr%%" style="max-width: 100%; border: 0;" border="0" alt="">
++                            </a>
++                        </span>
++                        <span class="evergage-rec" style="display: inline-block; ">
++                            <a href="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/3/detail?userId=%%emailaddr%%">
++                                <img src="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/3/summary.png?userId=%%emailaddr%%" style="max-width: 100%; border: 0;" border="0" alt="">
++                            </a>
++                        </span>
++                        <span class="evergage-rec" style="display: inline-block; ">
++                            <a href="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/4/detail?userId=%%emailaddr%%">
++                                <img src="https://rganesh523015076.australia-3.evergage.com/api/dataset/nto/campaign/xId1F/IvvD1/4/summary.png?userId=%%emailaddr%%" style="max-width: 100%; border: 0;" border="0" alt="">
++                            </a>
++                        </span>
++                    </div>
++                </div>
++            </td>
++        </tr>
++    
++</table>
++<!-- end evergage recs block (Prod Recs) --></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner"><h1 style="color: rgb(24, 24, 24); font-family: Arial, helvetica, sans-serif; font-size: 28px; font-style: normal; font-weight: bold; line-height: 1; text-align: center;">
++	<span style="font-size:44px;"><span style="font-family:Impact,Charcoal,sans-serif;">Interaction Studio Prod Recs OTE&nbsp;</span></span></h1></td></tr></table>
+                                                 </td>
+                                               </tr>
+                                               </tbody>
+```
+
+</details>
+
+### Unchanged: 35 asset(s)
+
+---
+
 ## 2026-04-15T12:31:51Z
 
 ### Added (29)

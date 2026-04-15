@@ -120,8 +120,109 @@ Subject: dm
                                               <tbody>
                                               <tr>
                                                 <td class="responsive-td" valign="top" style="width: 100%;">
-                                                  <div data-type="slot" data-key="banner">
-												  </div>
+                                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
+Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
+Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
+Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
+Set @imageCompoundValue = AttributeValue("1670335280711") /* Passed for the DM Email Preview */
+IF (NOT Empty(@sfOrgId) AND NOT Empty(@journeyId)) THEN
+    Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
+    Set @personalizeId = Concat(@objectId,_emailId,"1670335280711")
+ENDIF
+IF EMPTY(@imageCompoundValue) THEN
+    IF NOT Empty(@personalizeDE) THEN
+        /* Try to pull from DE */
+        set @rows = LookupRows(@personalizeDE,"id",@personalizeId)
+        IF RowCount(@rows) == 0 THEN /* No Personalization Found fall back to default */
+            set @imageUrl = ''
+            set @altText = ''
+            set @hyperLink = ''
+        ELSE
+            set @row = ROW(@rows, 1)
+            set @valueObj = FIELD(@row, 'value')
+            set @imageUrl = RegExMatch(@valueObj, 'imageUrl="(.*?)"(?:||$)', 1)
+            set @altText = RegExMatch(@valueObj, 'altText="(.*?)"(?:||$)', 1)
+            set @hyperLink = RegExMatch(@valueObj, 'hyperLink="(.*?)"(?:||$)', 1)
+        ENDIF
+    ELSE /* No p13n or a DE then just Fallback to Default */
+        set @imageUrl = ''
+        set @altText = ''
+        set @hyperLink = ''
+    ENDIF
+ELSE
+    /* DM Email Preview */
+    set @valueObj = @imageCompoundValue
+    set @imageUrl = RegExMatch(@valueObj, 'imageUrl="(.*?)"(?:||$)', 1)
+    set @altText = RegExMatch(@valueObj, 'altText="(.*?)"(?:||$)', 1)
+    set @hyperLink = RegExMatch(@valueObj, 'hyperLink="(.*?)"(?:||$)', 1)
+ENDIF
+
+IF EMPTY(@hyperLink) THEN
+    set @hyperLinkHtmlOpen = ''
+    set @hyperLinkHtmlClose = ''
+ELSE
+    set @hyperLinkHtmlOpen = Concat('<a href="', @hyperLink,'">')
+    set @hyperLinkHtmlClose = '</a>'
+ENDIF
+
+IF EMPTY(@imageUrl) THEN /* The Default set is not valid so display nothing */
+    Set @displayedContent = ''
+ELSE
+    Set @displayedContent = Concat('<table class="dm-image-block" data-dm-block-id="1670335280711" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center">', @hyperLinkHtmlOpen, '<img src="', @imageUrl , '" alt="', @altText , '" width="100%" style="display: block; padding: 0px; text-align: center; height: auto; width: 100%; border: 0px;">', @hyperLinkHtmlClose, '</td></tr></table>')ENDIF
+ENDIF
+]%%
+
+%%=v(@displayedContent)=%%
+%%[/* DO NOT TOUCH */]%%</td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
+Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
+Set @freeText = AttributeValue("1670335334652") /* Passed for the DM Email Preview */
+Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
+Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
+Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
+Set @personalizeId = Concat(@objectId,_emailId,"1670335334652")
+IF EMPTY(@freeText) THEN
+    Set @freeTextMsg = Lookup(@personalizeDE,"value","id",@personalizeId)
+ELSE THEN
+    Set @freeTextMsg = @freeText
+ENDIF
+Set @freeTextMsg = Concat('<div class="dm-free-text-block" data-dm-block-id="1670335334652">', @freeTextMsg, '</div>')
+]%%
+%%=v(@freeTextMsg)=%%
+%%[/* DO NOT TOUCH */]%%</td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
+Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
+Set @richText = AttributeValue("1670335380995") /* Passed for the DM Email Preview */
+Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
+Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
+Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
+Set @personalizeId = Concat(@objectId,_emailId,"1670335380995")
+IF EMPTY(@richText) THEN
+    Set @richTextMsg = Lookup(@personalizeDE,"value","id",@personalizeId)
+ELSE THEN
+    Set @richTextMsg = @richText
+ENDIF
+Set @richTextMsg = Concat('<div class="dm-rich-text-block" data-dm-block-id="1670335380995">', @richTextMsg, '</div>')
+]%%
+%%=v(@richTextMsg)=%%
+%%[*/ DO NOT TOUCH */]%%</td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%%[/* DO NOT TOUCH */
+Set @sfOrgId = RegExMatch(AttributeValue("sfOrgId"),"(^[a-zA-Z0-9]{18}$)",1)
+Set @variableName = AttributeValue("1670335402300") /* Passed for the DM Email Preview */
+Set @objectId = IIF(EMPTY(AttributeValue("sfCampaignMemberId")), AttributeValue("id"), AttributeValue("sfCampaignMemberId"))
+Set @journeyId = RegExMatch(AttributeValue("journeyId"),"(^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$)",1)
+Set @blockPlaceholder = '<div class="dm-message-settings-block" data-dm-block-id="1670335402300"></div>'
+IF (NOT Empty(@sfOrgId) AND NOT Empty(@journeyId)) THEN
+    Set @personalizeDE = Concat("PersonalizationDE", "_" , @sfOrgId, "_", @journeyId)
+    Set @personalizeId = Concat(@objectId,_emailId,"1670335402300")
+ENDIF
+IF EMPTY(@variableName) THEN
+    IF NOT Empty(@personalizeDE) THEN
+        Set @variableName = Lookup(@personalizeDE,"value","id",@personalizeId)
+    ELSE
+        Set @variableName = ''
+    ENDIF
+ENDIF
+]%%
+%%=v(@blockPlaceholder)=%%
+%%[/* DO NOT TOUCH */]%%</td></tr></table>
                                                 </td>
                                               </tr>
                                               </tbody>
