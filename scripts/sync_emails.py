@@ -235,8 +235,15 @@ def _load_previous_manifest(directory: Path) -> dict[str, dict[str, Any]]:
         return {}
 
 
+TEMPLATE_BASED_TYPE_ID = 207
+
+
 def _is_text_only(item: dict[str, Any]) -> bool:
     return item.get("assetType", {}).get("id", 0) == TEXT_ONLY_TYPE_ID
+
+
+def _is_template_based(item: dict[str, Any]) -> bool:
+    return item.get("assetType", {}).get("id", 0) == TEMPLATE_BASED_TYPE_ID
 
 
 def _build_metadata_header(item: dict[str, Any]) -> str:
@@ -254,41 +261,78 @@ def _build_metadata_header(item: dict[str, Any]) -> str:
 
     if not parts:
         return ""
-    separator = "---"
-    return "\n".join(parts) + f"\n{separator}\n"
+    return "\n".join(parts) + "\n---\n"
 
 
-def _extract_content(item: dict[str, Any]) -> tuple[str, str]:
+def _compile_slots_to_html(html_view: dict[str, Any]) -> str:
+    """For template-based emails, reconstruct HTML from slot data when
+    views.html.content is empty but views.html.slots is populated."""
+    slots = html_view.get("slots", {})
+    if not slots:
+        return ""
+
+    parts: list[str] = []
+    for slot_key in sorted(slots.keys()):
+        slot = slots[slot_key]
+        blocks = slot.get("blocks", {})
+        for block_key in sorted(blocks.keys()):
+            block = blocks[block_key]
+            block_content = block.get("content", "")
+            if block_content:
+                parts.append(block_content)
+    return "\n".join(parts)
+
+
+def _extract_content(item: dict[str, Any]) -> tuple[str, str, str]:
     """Determine filename extension and text content for any asset type.
 
-    Returns (extension, content_string).
+    Returns (extension, content_string, extraction_source).
+    extraction_source describes where the content came from for diagnostics.
     """
     views = item.get("views", {})
     meta_header = _build_metadata_header(item)
-    html_content = views.get("html", {}).get("content", "")
+    html_view = views.get("html", {})
 
+    # --- Source 1: views.html.content (primary for HTML & template-based emails) ---
+    html_content = html_view.get("content", "")
     if html_content:
         if meta_header:
             html_content = f"<!--\n{meta_header}-->\n{html_content}"
-        return ".html", html_content
+        return ".html", html_content, "views.html.content"
 
+    # --- Source 2: views.html.slots (template-based emails store content in slots) ---
+    if _is_template_based(item):
+        slot_html = _compile_slots_to_html(html_view)
+        if slot_html:
+            if meta_header:
+                slot_html = f"<!--\n{meta_header}-->\n{slot_html}"
+            return ".html", slot_html, "views.html.slots"
+
+    # --- Source 3: views.text.content (text-only emails) ---
     text_content = views.get("text", {}).get("content", "")
     if text_content:
-        return ".txt", meta_header + text_content
+        return ".txt", meta_header + text_content, "views.text.content"
 
+    # --- Source 4: top-level content field ---
     raw_content = item.get("content", "")
     if raw_content:
         ext = ".txt" if _is_text_only(item) else ".html"
         prefix = meta_header if ext == ".txt" else (f"<!--\n{meta_header}-->\n" if meta_header else "")
-        return ext, prefix + raw_content
+        return ext, prefix + raw_content, "item.content"
 
+    # --- Source 5: design field (some blocks store JSON design data) ---
+    design = item.get("design", "")
+    if design:
+        return ".json", design if isinstance(design, str) else json.dumps(design, indent=2), "item.design"
+
+    # --- Fallback ---
     name = item.get("name", "unnamed")
     asset_type = item.get("assetType", {}).get("displayName", "unknown")
     subject = views.get("subjectline", {}).get("content", "")
     fallback = f"(No extractable content)\nName: {name}\nType: {asset_type}\n"
     if subject:
         fallback += f"Subject: {subject}\n"
-    return ".txt", fallback
+    return ".txt", fallback, "fallback"
 
 
 def write_assets(
@@ -314,6 +358,8 @@ def write_assets(
     added: list[dict[str, str]] = []
     modified: list[dict[str, str]] = []
     unchanged_count = 0
+    source_counts: dict[str, int] = {}
+    fallback_assets: list[str] = []
 
     for item in assets:
         asset_id = item.get("id", 0)
@@ -321,7 +367,11 @@ def write_assets(
         safe_name = sanitize_filename(name)
         meta = _asset_metadata(item)
 
-        ext, content = _extract_content(item)
+        ext, content, source = _extract_content(item)
+        source_counts[source] = source_counts.get(source, 0) + 1
+        if source == "fallback":
+            fallback_assets.append(f"{asset_id} ({name})")
+
         filename = f"{asset_id}_{safe_name}{ext}"
 
         filepath = directory / filename
@@ -356,7 +406,8 @@ def write_assets(
         written_files.add(filename)
 
         views = item.get("views", {})
-        manifest.append({
+        template_ref = item.get("template", {})
+        manifest_entry: dict[str, Any] = {
             "file": filename,
             "id": asset_id,
             "name": name,
@@ -369,7 +420,12 @@ def write_assets(
             "createdDate": item.get("createdDate", ""),
             "modifiedDate": item.get("modifiedDate", ""),
             "modifiedBy": meta["modifiedByName"],
-        })
+            "contentSource": source,
+        }
+        if template_ref and template_ref.get("id"):
+            manifest_entry["templateId"] = template_ref["id"]
+            manifest_entry["templateName"] = template_ref.get("name", "")
+        manifest.append(manifest_entry)
 
     deleted: list[dict[str, str]] = []
     stale = set(existing_files.keys()) - written_files
@@ -385,6 +441,13 @@ def write_assets(
     manifest.sort(key=lambda m: m["id"])
     manifest_path = directory / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, default=str) + "\n", encoding="utf-8")
+
+    src_summary = ", ".join(f"{k}: {v}" for k, v in sorted(source_counts.items()))
+    print(f"  Content sources: {src_summary}")
+    if fallback_assets:
+        print(f"  WARNING: {len(fallback_assets)} asset(s) had no extractable content:")
+        for fa in fallback_assets:
+            print(f"    - {fa}")
 
     changes = {
         "added": added,
@@ -732,6 +795,10 @@ def main() -> int:
         print(f"ERROR: Failed to fetch content blocks: {exc}")
         return 1
     print(f"Retrieved {len(blocks)} content block(s).")
+
+    if blocks:
+        print(f"Re-fetching {len(blocks)} content block(s) individually for full content...")
+        blocks = enrich_assets(blocks, token, rest_url, "content-blocks")
 
     # --- Fetch images ---
     print("Fetching images...")
