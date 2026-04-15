@@ -1,18 +1,253 @@
-# Salesforce DX Project: Next Steps
+# SFMCVault
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+SFMCVault is a version-control framework for Salesforce Marketing Cloud (SFMC) Content Builder. It automatically backs up all your emails, templates, content blocks, and images from SFMC into a Git repository, giving you a full audit trail of every change -- who changed what, when, and exactly what was different.
 
-## How Do You Plan to Deploy Your Changes?
+**Why SFMCVault?**
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+SFMC has no built-in version history for Content Builder assets. If someone edits an email or deletes a content block, that change is gone forever. SFMCVault solves this by syncing every asset into Git-tracked files with:
 
-## Configure Your Salesforce DX Project
+- Full HTML content (including AMPscript and dynamic content)
+- Human-readable changelogs with inline diffs
+- Metadata manifests (subject lines, preheaders, modified dates, who made the change)
+- Automatic daily syncs via GitHub Actions
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+---
 
-## Read All About It
+## What Gets Backed Up
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+| Category | Asset Types | Output Directory |
+|---|---|---|
+| **Emails** | Template-based, HTML paste, Text-only | `email-content/emails/` |
+| **Templates** | Email templates (layouts) | `email-content/templates/` |
+| **Content Blocks** | HTML, Text, Image, Button, Freeform, Code snippet, Dynamic content, Smart capture, Social share/follow, Live content, Reference, Image carousel, Custom, A/B test | `email-content/content-blocks/` |
+| **Images** | PNG, JPEG, GIF, and other image assets | `email-content/images/` |
+
+Each category also gets a `manifest.json` with metadata for every asset.
+
+---
+
+## Prerequisites
+
+- **Python 3.10+**
+- **Git**
+- **A GitHub account** (or any Git hosting provider)
+- **SFMC API credentials** (Installed Package with Server-to-Server integration)
+
+---
+
+## Setup Guide
+
+### Step 1: Create SFMC API Credentials
+
+1. Log in to SFMC and navigate to **Setup > Apps > Installed Packages**
+2. Click **New** to create a new package (e.g., "SFMCVault Backup")
+3. Click **Add Component** and select **API Integration**
+4. Choose **Server-to-Server** as the integration type
+5. Grant the following permissions:
+   - **Assets** — Read (under Content Builder)
+6. Save the package and note down these three values:
+   - **Client ID**
+   - **Client Secret**
+   - **Subdomain** (the `XXXXX` part from your SFMC URL: `https://XXXXX.auth.marketingcloudapis.com`)
+
+### Step 2: Clone the Repository
+
+```bash
+git clone https://github.com/rishiganesh25/sfmc_backup.git
+cd sfmc_backup
+```
+
+### Step 3: Install Dependencies
+
+```bash
+pip install httpx
+```
+
+### Step 4: Set Environment Variables
+
+Set these three environment variables with the credentials from Step 1:
+
+**macOS / Linux:**
+
+```bash
+export SFMC_CLIENT_ID="your-client-id"
+export SFMC_CLIENT_SECRET="your-client-secret"
+export SFMC_SUBDOMAIN="your-subdomain"
+```
+
+**Windows (PowerShell):**
+
+```powershell
+$env:SFMC_CLIENT_ID = "your-client-id"
+$env:SFMC_CLIENT_SECRET = "your-client-secret"
+$env:SFMC_SUBDOMAIN = "your-subdomain"
+```
+
+### Step 5: Run the Sync Manually (First Time)
+
+```bash
+python scripts/sync_emails.py
+```
+
+You should see output like:
+
+```
+Authenticating with SFMC...
+Authenticated. REST endpoint: https://XXXXX.rest.marketingcloudapis.com
+Fetching emails...
+  [emails] Page 1: 15 items (total 15/15)
+Retrieved 15 email(s).
+Re-fetching 15 email(s) individually for full content...
+  [emails] Enriched 15/15
+Fetching templates...
+...
+Done. 120 asset(s) synced (15 emails, 3 templates, 52 content blocks, 50 images).
+```
+
+### Step 6: Set Up Automated Daily Sync (GitHub Actions)
+
+The repository includes a GitHub Actions workflow at `.github/workflows/sync-sfmc-emails.yml` that runs the sync automatically every day at midnight UTC.
+
+To enable it:
+
+1. Push the repo to your own GitHub account (or fork it)
+2. Go to **Settings > Secrets and variables > Actions** in your GitHub repo
+3. Add these three **repository secrets**:
+
+   | Secret Name | Value |
+   |---|---|
+   | `SFMC_CLIENT_ID` | Your SFMC Client ID |
+   | `SFMC_CLIENT_SECRET` | Your SFMC Client Secret |
+   | `SFMC_SUBDOMAIN` | Your SFMC subdomain |
+
+4. Go to the **Actions** tab and enable the workflow if prompted
+5. Optionally, click **Run workflow** to trigger it manually
+
+From now on, the workflow will:
+- Run `scripts/sync_emails.py` daily
+- Commit any changes to `email-content/` with a detailed commit message
+- Skip the commit if nothing has changed
+
+---
+
+## Output Structure
+
+After the first sync, your repository will look like this:
+
+```
+email-content/
+├── emails/
+│   ├── 12345_Welcome_Email.html
+│   ├── 67890_Promo_Campaign.html
+│   └── manifest.json
+├── templates/
+│   ├── 11111_Main_Template.html
+│   └── manifest.json
+├── content-blocks/
+│   ├── 22222_Header_Block.html
+│   ├── 33333_Footer_Block.html
+│   └── manifest.json
+├── images/
+│   ├── 44444_Logo.png
+│   ├── 55555_Banner.jpg
+│   └── manifest.json
+├── CHANGELOG.md
+└── .commit-summary
+```
+
+### File Naming Convention
+
+Each file is named `{sfmc_asset_id}_{sanitized_name}.{ext}`, e.g., `139009_HK_Autocumulus_Main_Message.html`. The SFMC asset ID prefix ensures filenames are unique even if two assets have the same name.
+
+### Manifest Files
+
+Each `manifest.json` contains metadata for every asset in that category:
+
+```json
+{
+  "file": "12345_Welcome_Email.html",
+  "id": 12345,
+  "name": "Welcome Email",
+  "customerKey": "abc-def-123",
+  "assetType": "templatebasedemail",
+  "status": "Active",
+  "category": "Onboarding",
+  "subject": "Welcome to our platform!",
+  "preheader": "Get started today",
+  "createdDate": "2025-01-15T10:30:00Z",
+  "modifiedDate": "2026-03-20T14:45:00Z",
+  "modifiedBy": "Jane Smith",
+  "contentSource": "views.html.content+slots",
+  "templateId": 11111,
+  "templateName": "Main Template"
+}
+```
+
+### CHANGELOG.md
+
+A running history of every sync, showing what was added, modified, or deleted -- with inline diffs for modified assets:
+
+```markdown
+## 2026-04-15T12:00:00Z
+
+### Added (1)
+- `emails/99999_New_Campaign.html` -- "New Campaign" (modified in SFMC by Jane on 2026-04-14)
+
+### Modified (2)
+- `emails/12345_Welcome_Email.html` -- "Welcome Email" (modified in SFMC by John on 2026-04-15)
+
+### Unchanged: 48 asset(s)
+```
+
+---
+
+## Reviewing Changes
+
+### In GitHub UI
+
+- **Commit history** — click the "commits" link on the repo page to see all syncs
+- **File history** — open any file and click **History** to see every change to that specific email
+- **Blame view** — open any file and click **Blame** to see who changed each line
+- **CHANGELOG.md** — browse to `email-content/CHANGELOG.md` for a human-readable summary
+
+### Via Git CLI
+
+```bash
+# View all sync commits
+git log --oneline
+
+# See what changed in a specific commit
+git show <commit-hash>
+
+# View full change history for one email
+git log -p -- email-content/emails/12345_Welcome_Email.html
+
+# Compare two points in time
+git diff <old-hash> <new-hash> -- email-content/
+```
+
+---
+
+## Notes
+
+1. **SFMC API rate limits** — The script fetches each email, template, and content block individually (not just via bulk query) to ensure complete HTML content. For large SFMC accounts with thousands of assets, this may take several minutes and could approach API rate limits. If you hit rate limit errors, consider increasing the timeout values in the script or running the sync during off-peak hours.
+
+2. **Template-based emails** — SFMC stores template-based emails (type 207) as a template skeleton with separate slot content. SFMCVault automatically compiles these together to produce the full HTML you see in the SFMC UI. The `contentSource` field in the manifest tells you how the content was extracted (`views.html.content+slots` means it was compiled from template + slots).
+
+3. **Image storage** — Images are stored as binary files. Git is not ideal for tracking binary file changes over time (the repo size will grow). If you have a very large image library, consider adding `email-content/images/` to `.gitignore` or using [Git LFS](https://git-lfs.github.com/).
+
+4. **AMPscript and personalization** — SFMCVault saves the raw source HTML with AMPscript tags intact (e.g., `%%=v(@variable)=%%`). It does NOT render or resolve personalization — you get the exact source code, which is what you want for version control.
+
+5. **Credentials security** — Never commit your SFMC credentials to the repository. Always use environment variables locally or GitHub Secrets for the automated workflow. The Client Secret provides full API access to your SFMC account.
+
+6. **Multiple Business Units** — The API credentials are scoped to a single SFMC Business Unit. If you need to back up multiple BUs, create separate installed packages for each and run the sync with different credentials (you can use separate branches or repos).
+
+7. **Deleted assets** — When an asset is deleted from SFMC, the script removes the corresponding file and records the deletion (with the last known content) in the CHANGELOG. The deleted content remains in Git history permanently.
+
+8. **First run** — The first sync will show all assets as "added". Subsequent runs will correctly detect added, modified, deleted, and unchanged assets.
+
+---
+
+## License
+
+MIT
