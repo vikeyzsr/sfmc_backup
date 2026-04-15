@@ -11,7 +11,8 @@
     "preheader": "",
     "createdDate": "2022-12-07T07:58:08.39-06:00",
     "modifiedDate": "2022-12-08T01:13:52.887-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "50508_bt_v2.html",
@@ -25,7 +26,8 @@
     "preheader": "",
     "createdDate": "2022-12-07T08:27:28.183-06:00",
     "modifiedDate": "2022-12-07T09:27:32.997-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "50557_bt_v3.html",
@@ -39,7 +41,8 @@
     "preheader": "",
     "createdDate": "2022-12-07T09:33:36.373-06:00",
     "modifiedDate": "2022-12-12T07:56:06.653-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "51998_Populate_CDP_data_extensions.html",
@@ -53,7 +56,8 @@
     "preheader": "",
     "createdDate": "2023-01-17T04:24:19.737-06:00",
     "modifiedDate": "2023-01-17T04:24:34.11-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "52923_trg.html",
@@ -67,7 +71,8 @@
     "preheader": "",
     "createdDate": "2023-02-03T11:51:34.743-06:00",
     "modifiedDate": "2023-02-03T12:10:52.73-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "57944_My_Definition_-_April_25_2023_at_32947_PM.txt",
@@ -81,7 +86,8 @@
     "preheader": "",
     "createdDate": "2023-04-25T04:00:13.43-06:00",
     "modifiedDate": "2023-04-25T04:01:15.99-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "fallback"
   },
   {
     "file": "58266_gs_lp.html",
@@ -95,7 +101,8 @@
     "preheader": "",
     "createdDate": "2023-05-02T03:06:19.693-06:00",
     "modifiedDate": "2023-05-02T03:10:42.527-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "66965_test_cc.html",
@@ -109,7 +116,8 @@
     "preheader": "",
     "createdDate": "2023-09-01T01:58:52.303-06:00",
     "modifiedDate": "2023-09-01T02:17:44.33-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "68364_Full_Width_Banner.html",
@@ -123,7 +131,8 @@
     "preheader": "",
     "createdDate": "2023-09-22T04:39:13.963-06:00",
     "modifiedDate": "2023-09-22T04:45:59.74-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "item.content"
   },
   {
     "file": "69436_cumulus-logo.html",
@@ -137,7 +146,8 @@
     "preheader": "",
     "createdDate": "2023-10-04T05:28:13.523-06:00",
     "modifiedDate": "2023-10-04T05:29:55.447-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "item.content"
   },
   {
     "file": "82515_json_test.html",
@@ -151,7 +161,8 @@
     "preheader": "",
     "createdDate": "2024-03-05T02:38:23.457-06:00",
     "modifiedDate": "2024-03-05T02:42:51.237-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "100369_test.html",
@@ -165,7 +176,8 @@
     "preheader": "",
     "createdDate": "2024-07-12T00:52:05.48-06:00",
     "modifiedDate": "2025-09-03T05:40:21.917-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "views.html.content"
   },
   {
     "file": "100379_Mobile_Message_July_12_202413943_PM.txt",
@@ -179,6 +191,7 @@
     "preheader": "",
     "createdDate": "2024-07-12T02:11:05.887-06:00",
     "modifiedDate": "2024-07-12T02:11:09.883-06:00",
-    "modifiedBy": "Rishi Ganesh"
+    "modifiedBy": "Rishi Ganesh",
+    "contentSource": "fallback"
   }
 ]
