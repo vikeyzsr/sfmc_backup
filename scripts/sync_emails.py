@@ -264,22 +264,55 @@ def _build_metadata_header(item: dict[str, Any]) -> str:
     return "\n".join(parts) + "\n---\n"
 
 
-def _compile_slots_to_html(html_view: dict[str, Any]) -> str:
-    """For template-based emails, reconstruct HTML from slot data when
-    views.html.content is empty but views.html.slots is populated."""
+def _get_slot_content(slots: dict[str, Any], slot_key: str) -> str:
+    """Extract the combined HTML content for a single slot key."""
+    slot = slots.get(slot_key, {})
+    blocks = slot.get("blocks", {})
+    parts: list[str] = []
+    for block_key in sorted(blocks.keys()):
+        block_content = blocks[block_key].get("content", "")
+        if block_content:
+            parts.append(block_content)
+    return "".join(parts)
+
+
+_SLOT_DIV_RE = re.compile(
+    r'<div\s+data-type="slot"\s+data-key="([^"]+)"[^>]*>'
+    r'[\s]*'
+    r'</div>',
+    re.IGNORECASE,
+)
+
+
+def _merge_slots_into_template(template_html: str, slots: dict[str, Any]) -> str:
+    """Replace empty <div data-type="slot" data-key="..."></div> placeholders
+    in the template HTML with the actual slot content from views.html.slots.
+
+    This produces the same compiled HTML that the SFMC UI displays.
+    """
+    if not slots:
+        return template_html
+
+    def _replace_slot(match: re.Match) -> str:
+        slot_key = match.group(1)
+        content = _get_slot_content(slots, slot_key)
+        return content if content else match.group(0)
+
+    return _SLOT_DIV_RE.sub(_replace_slot, template_html)
+
+
+def _compile_slots_only(html_view: dict[str, Any]) -> str:
+    """Last-resort extraction: concatenate all slot block content when
+    views.html.content is completely empty."""
     slots = html_view.get("slots", {})
     if not slots:
         return ""
 
     parts: list[str] = []
     for slot_key in sorted(slots.keys()):
-        slot = slots[slot_key]
-        blocks = slot.get("blocks", {})
-        for block_key in sorted(blocks.keys()):
-            block = blocks[block_key]
-            block_content = block.get("content", "")
-            if block_content:
-                parts.append(block_content)
+        content = _get_slot_content(slots, slot_key)
+        if content:
+            parts.append(content)
     return "\n".join(parts)
 
 
@@ -292,35 +325,43 @@ def _extract_content(item: dict[str, Any]) -> tuple[str, str, str]:
     views = item.get("views", {})
     meta_header = _build_metadata_header(item)
     html_view = views.get("html", {})
-
-    # --- Source 1: views.html.content (primary for HTML & template-based emails) ---
     html_content = html_view.get("content", "")
+    slots = html_view.get("slots", {})
+
+    # --- Source 1: template-based emails - merge slot content into template skeleton ---
+    if _is_template_based(item) and html_content and slots:
+        compiled = _merge_slots_into_template(html_content, slots)
+        if meta_header:
+            compiled = f"<!--\n{meta_header}-->\n{compiled}"
+        return ".html", compiled, "views.html.content+slots"
+
+    # --- Source 2: views.html.content (HTML paste emails, non-template) ---
     if html_content:
         if meta_header:
             html_content = f"<!--\n{meta_header}-->\n{html_content}"
         return ".html", html_content, "views.html.content"
 
-    # --- Source 2: views.html.slots (template-based emails store content in slots) ---
-    if _is_template_based(item):
-        slot_html = _compile_slots_to_html(html_view)
+    # --- Source 3: views.html.slots only (template-based but content is empty) ---
+    if _is_template_based(item) and slots:
+        slot_html = _compile_slots_only(html_view)
         if slot_html:
             if meta_header:
                 slot_html = f"<!--\n{meta_header}-->\n{slot_html}"
             return ".html", slot_html, "views.html.slots"
 
-    # --- Source 3: views.text.content (text-only emails) ---
+    # --- Source 4: views.text.content (text-only emails) ---
     text_content = views.get("text", {}).get("content", "")
     if text_content:
         return ".txt", meta_header + text_content, "views.text.content"
 
-    # --- Source 4: top-level content field ---
+    # --- Source 5: top-level content field ---
     raw_content = item.get("content", "")
     if raw_content:
         ext = ".txt" if _is_text_only(item) else ".html"
         prefix = meta_header if ext == ".txt" else (f"<!--\n{meta_header}-->\n" if meta_header else "")
         return ext, prefix + raw_content, "item.content"
 
-    # --- Source 5: design field (some blocks store JSON design data) ---
+    # --- Source 6: design field (some blocks store JSON design data) ---
     design = item.get("design", "")
     if design:
         return ".json", design if isinstance(design, str) else json.dumps(design, indent=2), "item.design"
