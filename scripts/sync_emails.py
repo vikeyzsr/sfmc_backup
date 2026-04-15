@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Fetch all SFMC Content Builder assets (emails + content blocks) and write
-them as individual files for version tracking.
+"""Fetch all SFMC Content Builder assets (emails, templates, content blocks,
+and images) and write them as individual files for version tracking.
 
 Credentials are read from environment variables:
     SFMC_CLIENT_ID
@@ -8,17 +8,22 @@ Credentials are read from environment variables:
     SFMC_SUBDOMAIN
 
 Output:
-    email-content/emails/{id}_{name}.html       -- one file per email
-    email-content/emails/manifest.json          -- metadata index of emails
-    email-content/content-blocks/{id}_{name}.*  -- one file per content block
-    email-content/content-blocks/manifest.json  -- metadata index of blocks
-    email-content/CHANGELOG.md                  -- running history of changes
-    email-content/.commit-summary               -- consumed by the workflow
+    email-content/emails/{id}_{name}.html           -- one file per email
+    email-content/emails/manifest.json              -- metadata index of emails
+    email-content/templates/{id}_{name}.html        -- one file per template
+    email-content/templates/manifest.json           -- metadata index of templates
+    email-content/content-blocks/{id}_{name}.*      -- one file per content block
+    email-content/content-blocks/manifest.json      -- metadata index of blocks
+    email-content/images/{id}_{name}.{ext}          -- one file per image
+    email-content/images/manifest.json              -- metadata index of images
+    email-content/CHANGELOG.md                      -- running history of changes
+    email-content/.commit-summary                   -- consumed by the workflow
 """
 
 from __future__ import annotations
 
 import difflib
+import hashlib
 import json
 import os
 import re
@@ -26,28 +31,70 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "email-content"
 EMAILS_DIR = OUTPUT_DIR / "emails"
+TEMPLATES_DIR = OUTPUT_DIR / "templates"
 CONTENT_BLOCKS_DIR = OUTPUT_DIR / "content-blocks"
+IMAGES_DIR = OUTPUT_DIR / "images"
 
-EMAIL_TYPE_IDS = [207, 208, 209]  # templatebasedemail, htmlemail, textonlyemail
+EMAIL_TYPE_IDS = [
+    207,  # templatebasedemail
+    208,  # htmlemail
+    209,  # textonlyemail
+]
+
+TEMPLATE_TYPE_IDS = [
+    210,  # template
+]
+
 CONTENT_BLOCK_TYPE_IDS = [
     195,  # webpage
     196,  # textblock
     197,  # htmlblock
+    198,  # imageblock
     199,  # buttonblock
+    202,  # smartcaptureblock
+    203,  # smartcaptureformfieldblock
+    205,  # socialshareblock
+    206,  # socialfollowblock
+    214,  # freeformblock
     220,  # codesnippetblock
     227,  # dynamiccontentblock
+    230,  # livecontent
+    231,  # referenceblock
+    232,  # imagecarouselblock
+    233,  # customblock
+    236,  # abtestblock
 ]
+
+IMAGE_TYPE_IDS = [
+    28,   # image (gif)
+    29,   # image (jpeg)
+    30,   # image (png)
+    31,   # image (unknown/other)
+]
+
 PAGE_SIZE = 2500
 
 CHANGELOG_FILE = OUTPUT_DIR / "CHANGELOG.md"
 COMMIT_SUMMARY_FILE = OUTPUT_DIR / ".commit-summary"
 META_FILES = {"manifest.json"}
+
+MIME_TO_EXT: dict[str, str] = {
+    "image/png": ".png",
+    "image/jpeg": ".jpg",
+    "image/gif": ".gif",
+    "image/webp": ".webp",
+    "image/svg+xml": ".svg",
+    "image/bmp": ".bmp",
+    "image/tiff": ".tiff",
+    "application/pdf": ".pdf",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -113,6 +160,44 @@ def fetch_assets(token: str, rest_url: str, type_ids: list[int], label: str) -> 
     return all_items
 
 
+TEXT_ONLY_TYPE_ID = 209
+
+
+def fetch_asset_detail(token: str, rest_url: str, asset_id: int) -> dict[str, Any]:
+    """Fetch a single asset by ID to get the full views/content payload."""
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    resp = httpx.get(
+        f"{rest_url}/asset/v1/content/assets/{asset_id}",
+        headers=headers,
+        timeout=60,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+def enrich_text_only_emails(
+    assets: list[dict[str, Any]], token: str, rest_url: str,
+) -> list[dict[str, Any]]:
+    """Re-fetch text-only emails individually so we get full content.
+
+    The bulk query endpoint sometimes omits views.text.content for
+    text-only emails. Fetching each one by ID guarantees the full payload.
+    """
+    enriched: list[dict[str, Any]] = []
+    for item in assets:
+        type_id = item.get("assetType", {}).get("id", 0)
+        if type_id == TEXT_ONLY_TYPE_ID:
+            asset_id = item.get("id", 0)
+            try:
+                full_item = fetch_asset_detail(token, rest_url, asset_id)
+                enriched.append(full_item)
+                continue
+            except httpx.HTTPStatusError:
+                print(f"  Warning: could not fetch detail for asset {asset_id}, using bulk data")
+        enriched.append(item)
+    return enriched
+
+
 # ---------------------------------------------------------------------------
 # File writing with change detection
 # ---------------------------------------------------------------------------
@@ -146,24 +231,52 @@ def _load_previous_manifest(directory: Path) -> dict[str, dict[str, Any]]:
         return {}
 
 
+def _is_text_only(item: dict[str, Any]) -> bool:
+    return item.get("assetType", {}).get("id", 0) == TEXT_ONLY_TYPE_ID
+
+
+def _build_metadata_header(item: dict[str, Any]) -> str:
+    """Build a header block with subject/preheader so changes to those
+    fields appear in git diffs, not just in manifest.json."""
+    views = item.get("views", {})
+    subject = views.get("subjectline", {}).get("content", "")
+    preheader = views.get("preheader", {}).get("content", "")
+
+    parts: list[str] = []
+    if subject:
+        parts.append(f"Subject: {subject}")
+    if preheader:
+        parts.append(f"Preheader: {preheader}")
+
+    if not parts:
+        return ""
+    separator = "---"
+    return "\n".join(parts) + f"\n{separator}\n"
+
+
 def _extract_content(item: dict[str, Any]) -> tuple[str, str]:
     """Determine filename extension and text content for any asset type.
 
     Returns (extension, content_string).
     """
     views = item.get("views", {})
+    meta_header = _build_metadata_header(item)
     html_content = views.get("html", {}).get("content", "")
 
     if html_content:
+        if meta_header:
+            html_content = f"<!--\n{meta_header}-->\n{html_content}"
         return ".html", html_content
 
     text_content = views.get("text", {}).get("content", "")
     if text_content:
-        return ".txt", text_content
+        return ".txt", meta_header + text_content
 
     raw_content = item.get("content", "")
     if raw_content:
-        return ".html", raw_content
+        ext = ".txt" if _is_text_only(item) else ".html"
+        prefix = meta_header if ext == ".txt" else (f"<!--\n{meta_header}-->\n" if meta_header else "")
+        return ext, prefix + raw_content
 
     name = item.get("name", "unnamed")
     asset_type = item.get("assetType", {}).get("displayName", "unknown")
@@ -268,6 +381,156 @@ def write_assets(
     manifest.sort(key=lambda m: m["id"])
     manifest_path = directory / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, default=str) + "\n", encoding="utf-8")
+
+    changes = {
+        "added": added,
+        "modified": modified,
+        "deleted": deleted,
+        "unchanged": unchanged_count,
+    }
+    return manifest, changes
+
+
+# ---------------------------------------------------------------------------
+# Image / binary asset downloading
+# ---------------------------------------------------------------------------
+
+def _guess_image_ext(item: dict[str, Any], resp_headers: dict[str, str] | None = None) -> str:
+    """Determine file extension for an image asset from metadata or HTTP headers."""
+    file_props = item.get("fileProperties", {})
+    published_url = file_props.get("publishedURL", "") or item.get("fileProperties", {}).get("fileURL", "")
+
+    if published_url:
+        path = urlparse(published_url).path
+        if "." in path:
+            ext = os.path.splitext(path)[1].lower()
+            if ext in (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".bmp", ".tiff", ".pdf"):
+                return ".jpg" if ext == ".jpeg" else ext
+
+    mime = (file_props.get("mimeType", "") or "").lower()
+    if not mime and resp_headers:
+        mime = (resp_headers.get("content-type", "").split(";")[0]).strip().lower()
+    if mime in MIME_TO_EXT:
+        return MIME_TO_EXT[mime]
+
+    return ".bin"
+
+
+def _download_image(url: str, token: str) -> bytes | None:
+    """Download binary content from a URL. Returns bytes or None on failure."""
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = httpx.get(url, headers=headers, timeout=120, follow_redirects=True)
+        resp.raise_for_status()
+        return resp.content
+    except (httpx.HTTPStatusError, httpx.RequestError) as exc:
+        print(f"  Warning: failed to download {url}: {exc}")
+        return None
+
+
+def write_image_assets(
+    assets: list[dict[str, Any]],
+    directory: Path,
+    label: str,
+    token: str,
+) -> tuple[list[dict[str, Any]], dict[str, list]]:
+    """Download image assets to disk. Returns (manifest, changes).
+
+    Uses file hash comparison for change detection since binary diffs
+    are not human-readable.
+    """
+    directory.mkdir(parents=True, exist_ok=True)
+
+    existing_files: dict[str, bytes] = {}
+    for f in directory.iterdir():
+        if f.is_file() and f.name not in META_FILES:
+            existing_files[f.name] = f.read_bytes()
+
+    prev_manifest = _load_previous_manifest(directory)
+
+    written_files: set[str] = set()
+    manifest: list[dict[str, Any]] = []
+    added: list[dict[str, str]] = []
+    modified: list[dict[str, str]] = []
+    unchanged_count = 0
+    skipped = 0
+
+    for item in assets:
+        asset_id = item.get("id", 0)
+        name = item.get("name", "unnamed")
+        safe_name = sanitize_filename(name)
+        meta = _asset_metadata(item)
+        file_props = item.get("fileProperties", {})
+
+        download_url = file_props.get("publishedURL", "") or file_props.get("fileURL", "")
+        if not download_url:
+            print(f"  Skipping image {asset_id} ({name}): no download URL")
+            skipped += 1
+            continue
+
+        ext = _guess_image_ext(item)
+        filename = f"{asset_id}_{safe_name}{ext}"
+        filepath = directory / filename
+        rel_path = f"{label}/{filename}"
+
+        image_bytes = _download_image(download_url, token)
+        if image_bytes is None:
+            skipped += 1
+            continue
+
+        new_hash = hashlib.sha256(image_bytes).hexdigest()
+
+        change_entry = {
+            "file": rel_path,
+            "name": name,
+            "modifiedBy": meta["modifiedByName"],
+            "modifiedDate": meta["modifiedDate"],
+        }
+
+        if filename not in existing_files:
+            added.append(change_entry)
+        else:
+            old_hash = hashlib.sha256(existing_files[filename]).hexdigest()
+            prev_entry = prev_manifest.get(filename, {})
+            metadata_changed = prev_entry.get("modifiedDate", "") != meta["modifiedDate"]
+            if old_hash != new_hash or metadata_changed:
+                change_entry["diff"] = f"(binary changed: sha256 {old_hash[:12]}... → {new_hash[:12]}...)"
+                modified.append(change_entry)
+            else:
+                unchanged_count += 1
+
+        filepath.write_bytes(image_bytes)
+        written_files.add(filename)
+
+        manifest.append({
+            "file": filename,
+            "id": asset_id,
+            "name": name,
+            "customerKey": item.get("customerKey", ""),
+            "assetType": item.get("assetType", {}).get("displayName", ""),
+            "category": item.get("category", {}).get("name", ""),
+            "fileSize": file_props.get("fileSize", ""),
+            "mimeType": file_props.get("mimeType", ""),
+            "publishedURL": file_props.get("publishedURL", ""),
+            "sha256": new_hash,
+            "createdDate": item.get("createdDate", ""),
+            "modifiedDate": item.get("modifiedDate", ""),
+            "modifiedBy": meta["modifiedByName"],
+        })
+
+    deleted: list[dict[str, str]] = []
+    stale = set(existing_files.keys()) - written_files
+    for stale_file in sorted(stale):
+        (directory / stale_file).unlink()
+        deleted.append({"file": f"{label}/{stale_file}", "old_content": ""})
+        print(f"  Removed stale file: {label}/{stale_file}")
+
+    manifest.sort(key=lambda m: m["id"])
+    manifest_path = directory / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2, default=str) + "\n", encoding="utf-8")
+
+    if skipped:
+        print(f"  Skipped {skipped} image(s) (no URL or download failed)")
 
     changes = {
         "added": added,
@@ -440,6 +703,20 @@ def main() -> int:
         return 1
     print(f"Retrieved {len(emails)} email(s).")
 
+    text_only_count = sum(1 for e in emails if e.get("assetType", {}).get("id") == TEXT_ONLY_TYPE_ID)
+    if text_only_count:
+        print(f"Re-fetching {text_only_count} text-only email(s) for full content...")
+        emails = enrich_text_only_emails(emails, token, rest_url)
+
+    # --- Fetch templates ---
+    print("Fetching templates...")
+    try:
+        templates = fetch_assets(token, rest_url, TEMPLATE_TYPE_IDS, "templates")
+    except httpx.HTTPStatusError as exc:
+        print(f"ERROR: Failed to fetch templates: {exc}")
+        return 1
+    print(f"Retrieved {len(templates)} template(s).")
+
     # --- Fetch content blocks ---
     print("Fetching content blocks...")
     try:
@@ -449,18 +726,37 @@ def main() -> int:
         return 1
     print(f"Retrieved {len(blocks)} content block(s).")
 
+    # --- Fetch images ---
+    print("Fetching images...")
+    try:
+        images = fetch_assets(token, rest_url, IMAGE_TYPE_IDS, "images")
+    except httpx.HTTPStatusError as exc:
+        print(f"ERROR: Failed to fetch images: {exc}")
+        return 1
+    print(f"Retrieved {len(images)} image(s).")
+
     # --- Write emails ---
     print(f"Writing emails to {EMAILS_DIR}/...")
     email_manifest, email_changes = write_assets(emails, EMAILS_DIR, "emails")
     _print_changes("Emails", email_changes)
+
+    # --- Write templates ---
+    print(f"Writing templates to {TEMPLATES_DIR}/...")
+    template_manifest, template_changes = write_assets(templates, TEMPLATES_DIR, "templates")
+    _print_changes("Templates", template_changes)
 
     # --- Write content blocks ---
     print(f"Writing content blocks to {CONTENT_BLOCKS_DIR}/...")
     block_manifest, block_changes = write_assets(blocks, CONTENT_BLOCKS_DIR, "content-blocks")
     _print_changes("Content blocks", block_changes)
 
+    # --- Write images ---
+    print(f"Downloading images to {IMAGES_DIR}/...")
+    image_manifest, image_changes = write_image_assets(images, IMAGES_DIR, "images", token)
+    _print_changes("Images", image_changes)
+
     # --- Changelog & commit summary ---
-    all_changes = _merge_changes(email_changes, block_changes)
+    all_changes = _merge_changes(email_changes, template_changes, block_changes, image_changes)
 
     has_changes = (
         all_changes["added"] or all_changes["modified"] or all_changes["deleted"]
@@ -470,8 +766,12 @@ def main() -> int:
         print("Updated CHANGELOG.md")
 
     write_commit_summary(all_changes, timestamp)
-    total = len(email_manifest) + len(block_manifest)
-    print(f"Done. {total} asset(s) synced ({len(email_manifest)} emails, {len(block_manifest)} content blocks).")
+    total = len(email_manifest) + len(template_manifest) + len(block_manifest) + len(image_manifest)
+    print(
+        f"Done. {total} asset(s) synced "
+        f"({len(email_manifest)} emails, {len(template_manifest)} templates, "
+        f"{len(block_manifest)} content blocks, {len(image_manifest)} images)."
+    )
 
     return 0
 
