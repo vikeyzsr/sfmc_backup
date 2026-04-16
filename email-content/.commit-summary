@@ -1,75 +1,8 @@
-chore: sync SFMC content 2026-04-16T07:44:54Z
+chore: sync SFMC content 2026-04-16T08:02:47Z
 
-Added: 19 | Modified: 0 | Deleted: 50 | Unchanged: 0
+Added: 1 | Modified: 1 | Deleted: 0 | Unchanged: 18
 
 Added:
-  - emails/1635013_External_Content_Email.html (External Content Email )
-  - emails/1586656_MC_Bio_Email_-_20250403_124450.html (MC Bio Email  - 20250403_124450)
+  - emails/1696657_GitHub_SFMC_Vault_Testing.html (GitHub_SFMC_Vault_Testing)
+Modified:
   - emails/1575695_MCTP_assignment.html (MCTP_assignment)
-  - emails/1553563_MC_Bio_Email.html (MC Bio Email )
-  - emails/1551565_MC_Bio.html (MC Bio)
-  - emails/1551563_Introduction_Email.txt (Introduction Email)
-  - content-blocks/1666877_Pref_Center.html (Pref_Center)
-  - content-blocks/1667938_Pref_Center2.html (Pref Center2)
-  - content-blocks/1664950_Test_Encryption.html (Test_Encryption)
-  - content-blocks/1575684_Event_Registration_Form.html (Event Registration Form)
-  - content-blocks/1568349_WhatsApp_Tracking_Summary_Report.txt (WhatsApp Tracking Summary Report)
-  - content-blocks/1568348_WhatsApp_Tracking_Reports_Export.txt (WhatsApp Tracking Reports Export)
-  - content-blocks/1568345_WhatsApp_Tracking_Template.txt (WhatsApp Tracking Template)
-  - content-blocks/1551547_CB_CV.html (CB_CV)
-  - images/1551592_GDC_logopng.png (GDC logo.png)
-  - images/1575632_gardeningpng.png (gardening.png)
-  - images/1575631_Musicpng.png (Music.png)
-  - images/1551546_profile-picpng.png (profile-pic.png)
-  - images/1551566_SF_Logopng.png (SF Logo.png)
-Deleted:
-  - emails/100333_CONTEST_WINNER.html
-  - emails/100377_male_email.html
-  - emails/100378_female_emaIl.html
-  - emails/101416_ravi.html
-  - emails/101418_FORD.html
-  - emails/101501_TATA.html
-  - emails/101502_BMW_CAR.html
-  - emails/139009_HK_Autocumulus_Main_Message_-_20250508_213248.html
-  - emails/203823_github_demo.txt
-  - emails/204341_Github_Test_for_tracking.html
-  - emails/46708_welcome.txt
-  - emails/50101_IS_Prod_Recs_OTE.html
-  - emails/50428_DM_TEST.html
-  - emails/51303_BT_Test.html
-  - emails/68365_HK_Autocumulus_Main_Message.html
-  - emails/74492_test1.html
-  - emails/74626_Lead_Engagement.html
-  - emails/99819_tesrtnb.html
-  - emails/99820_hfkf.txt
-  - content-blocks/100369_test.html
-  - content-blocks/100379_Mobile_Message_July_12_202413943_PM.txt
-  - content-blocks/50507_bt.html
-  - content-blocks/50508_bt_v2.html
-  - content-blocks/50557_bt_v3.html
-  - content-blocks/51998_Populate_CDP_data_extensions.html
-  - content-blocks/52923_trg.html
-  - content-blocks/57944_My_Definition_-_April_25_2023_at_32947_PM.txt
-  - content-blocks/58266_gs_lp.html
-  - content-blocks/66965_test_cc.html
-  - content-blocks/68364_Full_Width_Banner.html
-  - content-blocks/69436_cumulus-logo.html
-  - content-blocks/82515_json_test.html
-  - images/101395_download_6png.png
-  - images/101396_download_5png.png
-  - images/101398_download_7png.png
-  - images/139010_image_10png.png
-  - images/139011_image_11png.png
-  - images/139041_download_1png.png
-  - images/68108_Car_Loan_Banner.png
-  - images/68367_Logopng.png
-  - images/69437_cumulus-logo2x1png.png
-  - images/74631_aSTRO_Health_2png.png
-  - images/74632_aSTRO_Health_3_1png.png
-  - images/77274_Overarchingpng.png
-  - images/77275_Iconspng.png
-  - images/77340_Untitled-3_1png.png
-  - images/77341_Untitled-3_2png.png
-  - images/77342_can_1png.png
-  - images/77344_Untitled-2_1png.png
-  - images/77993_CANSTAR_new_1png.png

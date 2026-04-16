@@ -1,5 +1,52 @@
 # SFMC Content Builder Changelog
 
+## 2026-04-16T08:02:47Z
+
+### Added (1)
+- `emails/1696657_GitHub_SFMC_Vault_Testing.html` -- "GitHub_SFMC_Vault_Testing" (modified in SFMC by Vignesh Dharmaraj on 2026-04-16)
+
+### Modified (1)
+- `emails/1575695_MCTP_assignment.html` -- "MCTP_assignment" (modified in SFMC by Vignesh Dharmaraj on 2026-04-16)
+
+<details>
+<summary>Diff for emails/1575695_MCTP_assignment.html</summary>
+
+```diff
+--- a/emails/1575695_MCTP_assignment.html
++++ b/emails/1575695_MCTP_assignment.html
+@@ -518,7 +518,7 @@
+ 
+ ENDIF 
+ 
+-]%% --></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">
++]%% --></td></tr></table><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="min-width: 100%; " class="stylingblock-content-wrapper"><tr><td class="stylingblock-content-wrapper camarker-inner">%[set @]%
+ <!-------------------Desktop------------------->
+ <table cellpadding="0" cellspacing="0" width="100%" class="qe_none"> 
+   <tr>
+@@ -529,13 +529,13 @@
+ <h2 align="center" style="background-color:#0487e2; color:white;" width="560" height="">Hello %%firstname%%</h2></td></tr>
+       
+       <tr></tr>
+-     <tr><td width="400" style="color: #4a4a4a;font-family: 'Sky Text', Helvetica, Arial, sans-serif;font-size: 16px;line-height: 24px;text-align: center;padding-top:10px;padding-right:10px"><h3 style="color:#000080;" align="center"> I'm Vignesh Dharmaraj</h3>
++     <tr><td width="400" style="color: #4a4a4a;font-family: 'Sky Text', Helvetica, Arial, sans-serif;font-size: 16px;line-height: 24px;text-align: center;padding-top:10px;padding-right:10px"><h3 style="color:#000080;" align="center"> I'm Vignesh - Test </h3>
+                     <p align="left">
+        I hope this message finds you well!  I’m excited to introduce myself as the newest member of the GDC team here at Salesforce India Pvt. Ltd. <br><br>
+           I've joined as a Technical Consultant, and I’m thrilled to contribute to the team and the exciting projects ahead. <br><br>
+                   I have over 4 years of work experience in Salesforce Marketing Cloud. Before joining Salesforce, I worked for Comcast. <br><br>
+          
+-I hold a Bachelor’s degree in Computer Science from PSG College of Technology and a Master of Business Administration (Data Analytics) from KCT Business School.</p>
++I hold a Bachelor’s degree in Computer Science from PSG College of Technology</p>
+ </td>
+       <td>
+ <img src="https://image.s4.sfmc-content.com/lib/fe2c11727664067e721079/m/1/679340d7-523b-46e7-a8bb-b818addf3aff.jpg" width="250" height="500" alt="profile" title="profile"></td></tr>
+```
+
+</details>
+
+### Unchanged: 18 asset(s)
+
+---
+
 ## 2026-04-16T07:44:54Z
 
 ### Added (19)
