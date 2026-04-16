@@ -88,20 +88,5 @@
     "modifiedDate": "2025-09-03T05:40:12.343-06:00",
     "modifiedBy": "Vignesh Dharmaraj",
     "contentSource": "views.html.content+slots"
-  },
-  {
-    "file": "1696657_GitHub_SFMC_Vault_Testing.html",
-    "id": 1696657,
-    "name": "GitHub_SFMC_Vault_Testing",
-    "customerKey": "34bc26d4-58ef-481a-ac55-d6b1df76a9d1",
-    "assetType": "Template-Based Email",
-    "status": "Draft",
-    "category": "TP enablement Project",
-    "subject": "MC Bio Project - Vignesh",
-    "preheader": "",
-    "createdDate": "2026-04-16T01:47:52.28-06:00",
-    "modifiedDate": "2026-04-16T01:47:52.28-06:00",
-    "modifiedBy": "Vignesh Dharmaraj",
-    "contentSource": "views.html.content+slots"
   }
 ]
