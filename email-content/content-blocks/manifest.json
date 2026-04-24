@@ -118,5 +118,20 @@
     "modifiedDate": "2025-12-04T13:54:31.267-06:00",
     "modifiedBy": "Vignesh Dharmaraj",
     "contentSource": "views.html.content"
+  },
+  {
+    "file": "1700880_Test_Sfmc_vault_block.html",
+    "id": 1700880,
+    "name": "Test_Sfmc_vault_block",
+    "customerKey": "9fadeac8-6f36-4c7c-9954-76754b21c6dc",
+    "assetType": "HTML Block",
+    "status": "Draft",
+    "category": "Content Builder",
+    "subject": "",
+    "preheader": "",
+    "createdDate": "2026-04-23T23:37:12.623-06:00",
+    "modifiedDate": "2026-04-23T23:38:03.183-06:00",
+    "modifiedBy": "Vignesh Dharmaraj",
+    "contentSource": "item.content"
   }
 ]

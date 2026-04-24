@@ -1,5 +1,36 @@
 # SFMC Content Builder Changelog
 
+## 2026-04-24T05:40:39Z
+
+### Added (1)
+- `content-blocks/1700880_Test_Sfmc_vault_block.html` -- "Test_Sfmc_vault_block" (modified in SFMC by Vignesh Dharmaraj on 2026-04-23)
+
+### Modified (1)
+- `emails/1575695_MCTP_assignment.html` -- "MCTP_assignment" (modified in SFMC by Vignesh Dharmaraj on 2026-04-23)
+
+<details>
+<summary>Diff for emails/1575695_MCTP_assignment.html</summary>
+
+```diff
+--- a/emails/1575695_MCTP_assignment.html
++++ b/emails/1575695_MCTP_assignment.html
+@@ -580,7 +580,7 @@
+         </table></td></tr></table>
+ 
+ 
+-        </td></tr></table>
++        </td></tr></table>%%=ContentBlockbyID("1700880")=%%
+                                                 </td>
+                                               </tr>
+                                               </tbody>
+```
+
+</details>
+
+### Unchanged: 18 asset(s)
+
+---
+
 ## 2026-04-16T08:07:57Z
 
 ### Deleted (1)
